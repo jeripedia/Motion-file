@@ -9,8 +9,9 @@
      Buka di browser: autoplay + loop. ?debug=1 = penggeser waktu · ?t=4.2 = berhenti di detik 4,2 ·
      ?clean=1 = diam untuk render. Tombol: R = ulang, Spasi = jeda. -->
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Onest:wght@700;800&display=swap">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<link rel="stylesheet" href="assets/fonts/fonts.css">
+<script src="assets/lib/three.min.js"></script>
+<script src="assets/lib/gsap.min.js"></script>
 <style>
 /* teks TANPA kotak: kontras dari bayangan berlapis + selubung gradien gelap lokal */
 #stage{background:#0b0d12}
@@ -156,7 +157,7 @@ const KATA = [
   {w:'Terus,',t0:6.0,t1:6.3},{w:'gimana',t0:6.35,t1:6.7},{w:'industri',t0:6.75,t1:7.25},{w:'tetap',t0:7.3,t1:7.55},{w:'jalan,',t0:7.6,t1:7.95},
   {w:'tapi',t0:8.0,t1:8.2},{w:'Bumi',t0:8.25,t1:8.55},{w:'tetap',t0:8.6,t1:8.8},{w:'adem?',t0:8.85,t1:9.4}];
 const kt = w => KATA.find(k => k.w.toLowerCase().startsWith(w)).t0;
-const MOMEN = { judulMasuk: .4, judulKeluar: kt('gas') - .2, co2: kt('karbon') - .05, co2Hilang: kt('terus') - .3,
+const MOMEN = { judulMasuk: .4, judulKeluar: kt('karbon') - .15, co2: kt('dioksida') - .05, co2Hilang: kt('terus') - .3,
   menteri: kt('terus') + .1, DUR: 10 };
 
 /* ============ [1] PALET & FONT ============ */
