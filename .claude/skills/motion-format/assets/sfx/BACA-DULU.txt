@@ -1,0 +1,17 @@
+Bonus Sound Effect Motion Format v1.0.0
+34 efek suara, 8 kategori. Bonus Paket Template Motion.
+
+ISI
+- WAV/  kualitas penuh (48 kHz, stereo). Pakai di CapCut, Premiere, DaVinci, Final Cut, Canva.
+- MP3/  versi ringan, isinya sama. Pakai di template HTML / skill Motion Format (Claude).
+- daftar.html  buka dua kali untuk mendengar semua efek dan membaca kegunaannya.
+
+CARA PAKAI DENGAN CLAUDE
+Salin folder MP3 ke folder proyek videomu, lalu bilang ke Claude:
+"pakai efek MP3/04 Impact & Hit/impact-sinematik.mp3 saat judul muncul".
+
+LISENSI
+Semua efek dibuat Motion Format sendiri dengan rumus (sintesis), bukan rekaman pihak lain.
+Boleh dipakai di video sendiri maupun video klien, termasuk iklan dan video yang dimonetisasi,
+tanpa perlu mencantumkan kredit. Tidak boleh menjual ulang atau membagikan file efek ini
+sebagai paket tersendiri.

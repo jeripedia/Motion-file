@@ -57,6 +57,12 @@ efek suara, atau tanpa suara. Ambil semua yang sudah ada di pesan user; tanyakan
 **satu** pesan, dengan default yang sudah terisi, digabung dengan pertanyaan gaya (langkah 2)
 bila gaya belum disebut. Jangan bertanya bertubi-tubi.
 
+**Pustaka efek suara bawaan** (`assets/sfx/MP3/`, 34 efek, 8 kategori: whoosh & transisi, klik & UI,
+pop & notifikasi, impact & hit, riser & drop, glitch & digital, teks & angka, spesial). Bila user
+memilih "hanya efek suara", ElevenLabs tidak tersambung, atau user minta efek dari paket bonus,
+salin file yang dipakai ke `assets/audio/` proyek dan pakai itu — gratis, tanpa kredit.
+Daftar & kegunaan tiap efek: `assets/sfx/daftar.html`.
+
 ### Langkah 2 — Gaya
 
 - **User sudah menyebut gaya** (nama gaya di tabel bagian 3, "Resep Gaya" dari kelas, gaya yang
