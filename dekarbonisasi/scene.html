@@ -39,7 +39,7 @@ const KATA = [
   {w:'gas',t0:3.6,t1:3.85},{w:'yang',t0:3.9,t1:4.05},{w:'bikin',t0:4.1,t1:4.35},{w:'Bumi',t0:4.4,t1:4.7},{w:'makin',t0:4.75,t1:5.0},{w:'panas!',t0:5.05,t1:5.6},
   {w:'Terus,',t0:6.0,t1:6.3},{w:'gimana',t0:6.35,t1:6.7},{w:'industri',t0:6.75,t1:7.25},{w:'tetap',t0:7.3,t1:7.55},{w:'jalan,',t0:7.6,t1:7.95},
   {w:'tapi',t0:8.0,t1:8.2},{w:'Bumi',t0:8.25,t1:8.55},{w:'tetap',t0:8.6,t1:8.8},{w:'adem?',t0:8.85,t1:9.4}];
-const kt = w => KATA.find(k => k.w.toLowerCase().startsWith(w)).t0;
+const kt = w => (window.KATA || KATA).find(k => k.w.toLowerCase().startsWith(w)).t0;
 const MOMEN = { judulMasuk: .4, judulKeluar: kt('karbon') - .15, co2: kt('dioksida') - .05, co2Hilang: kt('terus') - .3,
   menteri: kt('terus') + .1, DUR: 10 };
 
@@ -392,10 +392,11 @@ S.traverse(o => { if (o.material) [].concat(o.material).forEach(kabutkan); });
 
 const SCENE = {
   dur: MOMEN.DUR,
-  kata: KATA,
+  kata: window.KATA || KATA,
   sub: {gaya: 'polos', maks: 4, font: `800 62px '${FONT.sub}'`, warna: PAL.teks, aksen: PAL.aksen, kunci: ['karbon', 'dioksida', 'panas', 'industri', 'bumi', 'adem'],
         y: t => ({x: lerp(W / 2, W * .62, E.io(seg(t, MOMEN.menteri - .6, MOMEN.menteri))), y: subY})},
-  audio: {vo: [], sfx: [], music: null},
+  audio: {vo: [{src: 'assets/audio/vo-01.mp3', at: .4, teks: 'Asap pabrik ini, isinya karbon dioksida, gas yang bikin Bumi makin panas! Terus, gimana industri tetap jalan, tapi Bumi tetap adem?'}],
+          sfx: [], music: null},
   muat: () => Promise.all([document.fonts.load(`400 100px '${FONT.judul}'`), document.fonts.load(`800 60px '${FONT.sub}'`)]),
   build(tl) { grainOn(.06); wIn(tl, $('#tJudul'), MOMEN.judulMasuk, {st: .12, b: 16, d: .9}); wOut(tl, $('#tJudul'), MOMEN.judulKeluar); },
   frame(t) { gambar(t); }

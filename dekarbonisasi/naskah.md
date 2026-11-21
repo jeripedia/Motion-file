@@ -1,6 +1,6 @@
 # Naskah — Apa itu Dekarbonisasi? (9:16, ±31 dtk)
 
-Narator: ceria & energik (ElevenLabs), satu suara. Teks TTS menulis singkatan/angka seperti diucapkan
+Narator: ceria & energik — ElevenLabs **Zandhira** (R7biip4PFaCanifKPxe6) · model eleven_v4 · flow 4AbRrUyEzFw520XLhk4I. Teks TTS menulis singkatan/angka seperti diucapkan
 ("C C U", "dua ribu lima puluh"); teks layar memakai "CCU", "2050", "CO₂".
 
 | # | Adegan (yang terlihat) | Kalimat VO | ±detik | Efek suara (di jeda VO) |
