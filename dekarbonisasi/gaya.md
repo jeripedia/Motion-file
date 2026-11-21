@@ -1,0 +1,11 @@
+# Gaya: 3D Realistik Sinematik — "Pabrik Senja Berasap" (dasar: Sejarah 3D Sinematik, diracik untuk industri)
+- Kamera: perspektif FOV 50, selalu bergerak. Hook rendah di samping pipa kuning, mendongak ke cerobong → crane naik → over-shoulder Menperin di platform baja.
+- Cahaya: matahari senja rendah (elevasi ±12°) dari kanan-belakang pabrik, backlight ke asap; isi dingin dari sisi gelap; lampu sodium & jendela pabrik menyala jingga.
+- Palet: langit #27304A→#F2A468 · smog #978A86 · asap #4E4843 · cerobong merah #B3302A / putih #E6E0D4 · baja #7C838A · pagar kuning #E2B42E · aksen teks #FFB25C
+- Bahan: beton bernoda oli, seng bergelombang berkarat, cerobong beton dengan lelehan jelaga, baja metalik.
+- Tipografi: DM Serif Display (judul 112 px, label 60–76 px) + Onest 800 (subtitle 62 px). Teks tanpa kotak, selubung gelap lokal.
+- Subtitle: per kata, polos, ±0,8H; bergeser ke kanan saat sosok Menperin di kiri. Kata kunci jingga.
+- Label: titik + garis + serif ("CO₂" di gumpalan asap, "Menperin Sarmuji" di atas helm).
+- Tanda tangan gerak: crane naik dari bawah rak pipa ke atas bahu Menperin.
+- Arah cerita: dunia senja berasap (masalah) → nanti berubah jadi langit biru bersih + pabrik tetap jalan (momen kunci).
+- Sosok Menperin: tubuh 3D dari belakang (jas gelap + helm proyek putih), wajah tidak ditampilkan.
