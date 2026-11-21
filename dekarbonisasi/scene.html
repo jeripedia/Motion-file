@@ -3,6 +3,7 @@
 <!--@HEAD-->
 <link rel="stylesheet" href="assets/fonts/fonts.css">
 <script src="assets/lib/three.min.js"></script>
+<script src="assets/lib/daratan-50m.js"></script>
 <script src="assets/lib/gsap.min.js"></script>
 <style>
 /* teks TANPA kotak: kontras dari bayangan berlapis + selubung gradien gelap lokal */
@@ -14,12 +15,24 @@
   font:400 112px/1 'DM Serif Display',serif;color:#FFF3E6;letter-spacing:.06em;
   text-shadow:0 4px 4px rgba(8,7,10,.85),0 0 34px rgba(8,7,10,.7),0 0 90px rgba(255,170,90,.3)}
 .judul small{display:block;margin-bottom:26px;font:800 46px/1 'Onest',sans-serif;letter-spacing:.42em;color:#FFC07A}
+#tDek,#tBeban,#tCuan,#tNZ{opacity:0}
+.arti{position:absolute;left:0;width:100%;text-align:center;z-index:6;opacity:0;font:800 60px/1.1 'Onest',sans-serif;color:#FFF3E6;
+  text-shadow:0 3px 4px rgba(8,7,10,.85),0 0 30px rgba(8,7,10,.7)}
+.arti .panah{color:#7DF2A8}.arti.kecil{font-size:46px;letter-spacing:.14em;color:#BFF6FB}.arti b{color:#FFFFFF}
+.coretan{position:relative;display:inline-block;color:#E8DCCF}.coretan i{position:absolute;left:-4%;top:52%;width:108%;height:12px;background:#E8553F;transform-origin:left;transform:scaleX(0);border-radius:6px}
+.cuan{color:#FFD66B;text-shadow:0 4px 4px rgba(8,7,10,.85),0 0 40px rgba(255,200,80,.55)}
 #gelap{position:absolute;inset:0;background:#04070c;opacity:0;pointer-events:none;z-index:9}
 </style>
 <!--@BODY-->
 <div class="selubung" id="vJudul"></div>
 <div class="selubung" id="vSub"></div>
 <div class="judul" id="tJudul"><small>APA ITU</small>DEKARBONISASI?</div>
+<div class="judul" id="tDek" style="top:230px"><small>JAWABANNYA</small>DEKARBONISASI</div>
+<div class="arti" id="tArti" style="top:420px">= memangkas emisi karbon <span class="panah">&#8595;</span></div>
+<div class="arti kecil" id="tUji" style="top:240px">UJI COBA &middot; <b>PETROKIMIA GRESIK</b></div>
+<div class="judul" id="tBeban" style="top:220px"><span class="coretan">BEBAN?<i id="coret"></i></span></div>
+<div class="judul cuan" id="tCuan" style="top:370px">SUMBER CUAN!</div>
+<div class="judul" id="tNZ" style="top:240px"><small>TARGET INDUSTRI</small>NET ZERO 2050</div>
 <div id="gelap"></div>
 <!--@SCRIPT-->
 /* =====================================================================================
@@ -39,9 +52,13 @@ const KATA = [
   {w:'gas',t0:3.6,t1:3.85},{w:'yang',t0:3.9,t1:4.05},{w:'bikin',t0:4.1,t1:4.35},{w:'Bumi',t0:4.4,t1:4.7},{w:'makin',t0:4.75,t1:5.0},{w:'panas!',t0:5.05,t1:5.6},
   {w:'Terus,',t0:6.0,t1:6.3},{w:'gimana',t0:6.35,t1:6.7},{w:'industri',t0:6.75,t1:7.25},{w:'tetap',t0:7.3,t1:7.55},{w:'jalan,',t0:7.6,t1:7.95},
   {w:'tapi',t0:8.0,t1:8.2},{w:'Bumi',t0:8.25,t1:8.55},{w:'tetap',t0:8.6,t1:8.8},{w:'adem?',t0:8.85,t1:9.4}];
-const kt = w => (window.KATA || KATA).find(k => k.w.toLowerCase().startsWith(w)).t0;
+const kt = (w, setelah = 0) => { const k = (window.KATA || KATA).find(k => k.t0 >= setelah && k.w.toLowerCase().replace(/[^a-z0-9]/g, '').startsWith(w)); return k ? k.t0 : setelah; };
+const VO_AT = [.4, 8.8, 14.3, 23.1, 30.8], [T1, T2, T3, T4, T5] = VO_AT, DUR = 38.3;
+const TG = kt('bumi', T5) - .12;                                   // potong ke bola Bumi tepat di kata "Bumi bersih"
 const MOMEN = { judulMasuk: .4, judulKeluar: kt('karbon') - .15, co2: kt('dioksida') - .05, co2Hilang: kt('terus') - .3,
-  menteri: kt('terus') + .1, DUR: 10 };
+  menteri: kt('terus') + .1, DUR };
+const SFX = [{src: 'assets/audio/sfx-whoosh.mp3', at: 4.6, vol: .35}, {src: 'assets/audio/sfx-whoosh.mp3', at: T2 - .35, vol: .3},
+  {src: 'assets/audio/sfx-whoosh.mp3', at: T4 - .3, vol: .28}, {src: 'assets/audio/sfx-whoosh.mp3', at: TG - .45, vol: .4}];
 
 /* ============ [1] PALET & FONT ============ */
 const C = h => new THREE.Color(h).convertSRGBToLinear(), V3 = (x, y, z) => new THREE.Vector3(x, y, z), DEG = Math.PI / 180;
@@ -50,7 +67,7 @@ const PAL = {
   kabut: '#978A86', kabutMatahari: '#FFBE88',                                       // smog: abu kecoklatan ↔ jingga ke arah matahari
   beton: '#6E6A63', baja: '#7C838A', bajaGelap: '#33373C', merah: '#B3302A', putih: '#E6E0D4', kuning: '#E2B42E',
   asap: '#4E4843', lampu: '#FFB04A', jas: '#1B2230', kulit: '#8A5C3E',
-  teks: '#FFF3E6', aksen: '#FFB25C', label: '#FFD7A6', co2: '#C9D2DA' };
+  teks: '#FFF3E6', aksen: '#FFB25C', label: '#FFD7A6', co2: '#C9D2DA', ccu: '#5FE3F0' };
 const FONT = { judul: 'DM Serif Display', sub: 'Onest' };
 const ARAH_MATAHARI = V3(.62, .2, -.76).normalize();   // matahari rendah di kanan-belakang pabrik: asap & cerobong diterangi dari belakang
 const R = rng(2050);
@@ -279,24 +296,24 @@ const asapTex = (() => { const n = 256, c = kanvas(n, n), x = c.getContext('2d')
    Billboard instanced; tiap partikel hidup f = fract(uT*laju + fase): naik dari mulut cerobong, membesar,
    terbawa angin ke kiri, memudar. Semua di shader → murah & sepenuhnya fungsi dari t. */
 const NAS = 90, sumberAsap = [];
-CEROBONG.forEach(([x, z, h, r]) => sumberAsap.push([x, h + .4, z, r * .62, 0]));
+CEROBONG.forEach(([x, z, h, r], i) => sumberAsap.push([x, h + .4, z, r * .62, i === 1 ? 2 : 0]));
 sumberAsap.push([-92, 54, -205, 12, 1]);                                                    // uap putih menara pendingin
 const asG = new THREE.InstancedBufferGeometry(), asQ = new THREE.PlaneGeometry(1, 1);
 asG.index = asQ.index; asG.setAttribute('position', asQ.attributes.position); asG.setAttribute('uv', asQ.attributes.uv);
 const asA = new Float32Array(sumberAsap.length * NAS * 4), asB = new Float32Array(sumberAsap.length * NAS * 4);
 sumberAsap.forEach(([x, y, z, r, uap], s) => { for (let i = 0; i < NAS; i++) { const k = (s * NAS + i) * 4;
-  asA.set([x, y, z, r], k); asB.set([i / NAS + R() * .01, uap ? .07 : .09 + R() * .02, R() * 6.28, uap], k); } });
+  asA.set([x, y, z, r], k); asB.set([i / NAS + R() * .01, uap === 1 ? .07 : .09 + R() * .02, R() * 6.28, uap], k); } });
 asG.setAttribute('aS', new THREE.InstancedBufferAttribute(asA, 4)); asG.setAttribute('aB', new THREE.InstancedBufferAttribute(asB, 4)); asG.instanceCount = sumberAsap.length * NAS;
-const asapM = new THREE.ShaderMaterial({transparent: true, depthWrite: false, uniforms: Object.assign({tA: {value: asapTex}, uAs: {value: C(PAL.asap)}, uK: {value: 1}}, UK, UL),
-  vertexShader: `attribute vec4 aS,aB;uniform float uT;varying vec2 vUv;varying vec3 vRel;varying float vF,vU;
-   void main(){float f=fract(uT*aB.y+aB.x);float uap=aB.w;vF=f;vU=uap;
+const asapM = new THREE.ShaderMaterial({transparent: true, depthWrite: false, uniforms: Object.assign({tA: {value: asapTex}, uAs: {value: C(PAL.asap)}, uK: {value: 1}, uKc: {value: 1}}, UK, UL),
+  vertexShader: `attribute vec4 aS,aB;uniform float uT;varying vec2 vUv;varying vec3 vRel;varying float vF,vU,vC;
+   void main(){float f=fract(uT*aB.y+aB.x);float uap=step(.5,aB.w)*step(aB.w,1.5);vF=f;vU=uap;vC=step(1.5,aB.w);
     float naik=mix(70.,40.,uap)*pow(f,.8);vec3 angin=vec3(-1.,0.,.25)*mix(95.,40.,uap)*f*f;
     vec3 c=aS.xyz+vec3(0.,naik,0.)+angin+vec3(sin(f*9.+aB.z)*3.,0.,cos(f*7.+aB.z)*3.)*f;
     float r=aB.z+f*1.4;vec2 q=mat2(cos(r),-sin(r),sin(r),cos(r))*(uv-.5)+.5;vUv=q;
     vec4 mv=viewMatrix*vec4(c,1.);float s=aS.w*mix(1.6,mix(10.,2.4,uap),pow(f,.6));mv.xy+=position.xy*s;
     vRel=vec3(dot(viewMatrix[0].xyz,mv.xyz),dot(viewMatrix[1].xyz,mv.xyz),dot(viewMatrix[2].xyz,mv.xyz));gl_Position=projectionMatrix*mv;}`,
-  fragmentShader: `uniform sampler2D tA;uniform vec3 uAs,uSunC;uniform float uK;varying vec2 vUv;varying vec3 vRel;varying float vF,vU;${GLSL_KABUT}
-   void main(){float a=texture2D(tA,vUv).a*smoothstep(0.,.06,vF)*(1.-smoothstep(.45,1.,vF))*mix(.85,.35,vU)*uK;
+  fragmentShader: `uniform sampler2D tA;uniform vec3 uAs,uSunC;uniform float uK,uKc;varying vec2 vUv;varying vec3 vRel;varying float vF,vU,vC;${GLSL_KABUT}
+   void main(){float a=texture2D(tA,vUv).a*smoothstep(0.,.06,vF)*(1.-smoothstep(.45,1.,vF))*mix(.85,.35,vU)*mix(mix(uK,1.,vU),uKc,vC);
     vec3 d=normalize(vRel);float maju=pow(max(dot(d,uSun),0.),4.);
     vec3 dasar=mix(uAs,vec3(.78,.76,.74),vU);vec3 col=dasar*(.55+.6*(vUv.y))+uSunC*maju*mix(.25,.5,vU)*(1.-vUv.y*.4);
     gl_FragColor=vec4(kabut(col,vRel*.7),a);}`});
@@ -321,37 +338,146 @@ for (let i = 0; i < NKB; i++) { let x, z, s; const lapis = i < 14 ? 0 : i < 44 ?
   else { x = -500 + R() * 1000; z = -220 - R() * 500; s = 140 + R() * 160; }                          // belakang: cakrawala
   kbA.set([x, s * (.06 + R() * .08), z, s], i * 4); kbB.set([R() * 6.28, (R() - .5) * .2, 1 + R() * 2, (lapis === 0 ? .22 : lapis === 1 ? .4 : .55) * (.6 + R() * .5)], i * 4); }
 kbG.setAttribute('aP', new THREE.InstancedBufferAttribute(kbA, 4)); kbG.setAttribute('aB', new THREE.InstancedBufferAttribute(kbB, 4)); kbG.instanceCount = NKB;
-const kabutM = new THREE.ShaderMaterial({transparent: true, depthWrite: false, uniforms: Object.assign({tA: {value: asapTex}}, UK, UL),
+const kabutM = new THREE.ShaderMaterial({transparent: true, depthWrite: false, uniforms: Object.assign({tA: {value: asapTex}, uKab: {value: 1}}, UK, UL),
   vertexShader: `attribute vec4 aP,aB;uniform float uT;varying vec2 vUv;varying vec3 vRel;varying float vA,vY;
    void main(){vec3 c=aP.xyz+vec3(-uT*aB.z,0.,uT*aB.z*.2);float r=aB.x+uT*aB.y;vec2 q=mat2(cos(r),-sin(r),sin(r),cos(r))*(uv-.5)+.5;vUv=q;
     vec4 mv=viewMatrix*vec4(c,1.);vec2 o=position.xy*aP.w*vec2(2.1,.55);mv.xy+=o;
     vRel=vec3(dot(viewMatrix[0].xyz,mv.xyz),dot(viewMatrix[1].xyz,mv.xyz),dot(viewMatrix[2].xyz,mv.xyz));vY=c.y+o.y;vA=aB.w;gl_Position=projectionMatrix*mv;}`,
-  fragmentShader: `uniform sampler2D tA;varying vec2 vUv;varying vec3 vRel;varying float vA,vY;${GLSL_KABUT}
-   void main(){float a=texture2D(tA,vUv).a*vA*smoothstep(0.,6.,vY)*smoothstep(6.,18.,length(vRel));vec3 d=normalize(vRel);
+  fragmentShader: `uniform sampler2D tA;uniform float uKab;varying vec2 vUv;varying vec3 vRel;varying float vA,vY;${GLSL_KABUT}
+   void main(){float a=texture2D(tA,vUv).a*vA*uKab*smoothstep(0.,6.,vY)*smoothstep(6.,18.,length(vRel));vec3 d=normalize(vRel);
     vec3 col=mix(uKw*1.02,uKs*1.3,pow(max(dot(d,uSun),0.),3.));gl_FragColor=vec4(kabut(col,vRel*.6),a);}`});
 const kabutMesh = new THREE.Mesh(kbG, kabutM); kabutMesh.frustumCulled = false; kabutMesh.renderOrder = 5; S.add(kabutMesh);
 
-/* ============ [9] KAMERA ============
-   Hook: rendah di samping pipa kuning, mendongak ke cerobong → dolly maju → crane naik ke belakang bahu Menperin
-   (sosoknya di bawah, cerobong berasap memenuhi atas layar 9:16). Selalu bergerak. */
-const KUNCI = [[0, [12.6, 1.6, 14], [-4, 72, -165]], [2.8, [9.5, 6, 11], [-8, 66, -165]], [4.6, [4.5, 13.2, 10.5], [-14, 48, -165]], [6.6, [1.6, 12.95, 8], [-11, 41, -165]], [8.6, [.95, 12.95, 6.3], [-12, 40, -165]], [10.5, [.75, 12.9, 5.7], [-12.5, 39.5, -165]]];
+/* ============ [8] ADEGAN 3 — TEKNOLOGI CCU di cerobong tengah ============
+   Kerah penangkap di leher cerobong (y 30) → pipa → unit pengolah → konveyor karung soda ash → rak lembaran kaca.
+   Saat adegan 3 cerobong tengah jadi tembus pandang (sinar-x) dan partikel CO₂ biru terlihat ditangkap. */
+const [C2X, C2Z, C2H] = [CEROBONG[1][0], CEROBONG[1][1], CEROBONG[1][2]];
+const mCerobong2 = mCerobong.clone(); mCerobong2.transparent = true;
+PABRIK.children.forEach(o => { if (o.material === mCerobong && Math.abs(o.position.x - C2X) < .1) o.material = mCerobong2; });
+const mSian = new THREE.MeshBasicMaterial({color: C(PAL.ccu).multiplyScalar(3)});
+const KERAH = new THREE.Group(); KERAH.position.set(C2X, 30, C2Z); PABRIK.add(KERAH);
+tambah(new THREE.CylinderGeometry(6.2, 6.6, 4.2, 40), mBaja, 0, 0, 0, KERAH);
+tambah(new THREE.TorusGeometry(6.45, .22, 8, 48), mSian, 0, 1.2, 0, KERAH).rotation.x = Math.PI / 2;
+tambah(new THREE.TorusGeometry(6.75, .22, 8, 48), mSian, 0, -1.2, 0, KERAH).rotation.x = Math.PI / 2;
+for (let a = 0; a < 8; a++) tambah(new THREE.BoxGeometry(.5, 5, .5), mBajaG, Math.cos(a * .785) * 6.5, 0, Math.sin(a * .785) * 6.5, KERAH);
+const JALUR_PIPA = new THREE.CatmullRomCurve3([V3(C2X + 6, 30, C2Z + 1.5), V3(C2X + 10, 30.5, C2Z + 3), V3(4, 28, -169), V3(10, 20, -163), V3(11, 10.5, -160.5)]);
+const PIPA = tambah(new THREE.TubeGeometry(JALUR_PIPA, 80, .9, 14), mBaja, 0, 0, 0);
+const UNIT = new THREE.Group(); UNIT.position.set(12, 0, -158); PABRIK.add(UNIT);
+tambah(new THREE.BoxGeometry(11, 9, 9), [mSeng, mSeng, mBajaG, mBeton, mSeng, mSeng], 0, 4.5, 0, UNIT);
+tambah(new THREE.BoxGeometry(11.4, .4, 9.4), mBajaG, 0, 9.2, 0, UNIT);
+tambah(new THREE.BoxGeometry(6, .35, .1), mSian, 0, 7.6, 4.56, UNIT);                    // strip lampu sian di fasad
+tambah(new THREE.BoxGeometry(3, 2.6, .2), mBajaG, 0, 1.3, 4.55, UNIT);                   // mulut konveyor
+// konveyor ke arah kamera + karung soda ash + rak kaca
+const KONV_Z0 = -153.5, KONV_L = 17;
+tambah(new THREE.BoxGeometry(2.4, .3, KONV_L), new THREE.MeshStandardMaterial({color: C('#1c1d20'), roughness: .9}), 12, 1.2, KONV_Z0 + KONV_L / 2);
+for (let z = 0; z <= KONV_L; z += 2.5) for (const s of [-1, 1]) tambah(new THREE.BoxGeometry(.15, 1.1, .15), mBajaG, 12 + s * 1.15, .55, KONV_Z0 + z);
+for (const s of [-1, 1]) tambah(new THREE.BoxGeometry(.12, .22, KONV_L), mKuning, 12 + s * 1.28, 1.42, KONV_Z0 + KONV_L / 2);
+const mKarung = new THREE.MeshStandardMaterial({color: C('#F1EFEA'), roughness: .85});
+const NKR = 9, KARUNG = Array.from({length: NKR}, () => { const m = tambah(new THREE.SphereGeometry(.5, 16, 10), mKarung, 12, 1.7, KONV_Z0); m.scale.set(1.3, .55, .85); return m; });
+const mKaca = new THREE.MeshStandardMaterial({color: C('#BFEAF2'), roughness: .04, metalness: .2, transparent: true, opacity: .42, emissive: C('#7FD6E6'), emissiveIntensity: .25, side: THREE.DoubleSide});
+const RAK = new THREE.Group(); RAK.position.set(12, 0, -134); PABRIK.add(RAK);
+tambah(new THREE.BoxGeometry(3.4, .2, 1.6), mBajaG, 0, .1, 0, RAK);
+for (const s of [-1, 1]) { const k = tambah(new THREE.BoxGeometry(.12, 2.6, .12), mBajaG, s * 1.6, 1.25, 0, RAK); k.rotation.x = 0; }
+const KACA = Array.from({length: 7}, (_, i) => { const p = tambah(new THREE.BoxGeometry(3, 2.1, .04), mKaca, 0, 1.25, -.55 + i * .18, RAK); p.rotation.x = -.12; p.castShadow = false; return p; });
+// partikel CO₂: naik di dalam cerobong lalu mengalir lewat pipa
+const NCO = 700, coG = new THREE.BufferGeometry(), coP = new Float32Array(NCO * 3), coS = Array.from({length: NCO}, () => [R(), R(), R()]);
+coG.setAttribute('position', new THREE.BufferAttribute(coP, 3));
+const coM = new THREE.PointsMaterial({color: C(PAL.ccu).multiplyScalar(2.2), size: .75, map: titikLembut, transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending});
+const coPts = new THREE.Points(coG, coM); coPts.frustumCulled = false; coPts.renderOrder = 8; S.add(coPts);
+const _v = V3();
+
+/* ============ [8b] TRUK (ekonomi bergerak) & KOIN (adegan 4) ============ */
+const TRUK = [];
+{ const warna = ['#E8E6E0', '#2F5D9A', '#C0392B', '#E2B42E', '#3F7F5A'];
+  for (let i = 0; i < 6; i++) { const g = new THREE.Group(), arah = i % 2 ? -1 : 1, mW = new THREE.MeshStandardMaterial({color: C(warna[i % 5]), roughness: .5, metalness: .2});
+    tambah(new THREE.BoxGeometry(2.4, 2.6, 2.3), new THREE.MeshStandardMaterial({color: C('#D9D6CF'), roughness: .4}), 0, 1.7, 4.6 * arah, g);
+    tambah(new THREE.BoxGeometry(2.5, 2.9, 8.5), mW, 0, 2.0, -.8 * arah, g);
+    for (const z of [-3.5, 0, 3.6]) for (const s of [-1, 1]) tambah(new THREE.CylinderGeometry(.5, .5, .35, 12), mBajaG, s * 1.2, .5, z * arah, g).rotation.z = Math.PI / 2;
+    S.add(g); TRUK.push({g, arah, x: arah > 0 ? 25 : 29.5, f: i / 6}); } }
+const mKoin = new THREE.MeshStandardMaterial({color: C('#F2C14E'), roughness: .25, metalness: .55, emissive: C('#7A5200'), emissiveIntensity: .55});
+const KOIN = Array.from({length: 34}, () => { const m = tambah(new THREE.CylinderGeometry(.42, .42, .07, 28), mKoin, 0, -50, 0, S); m.castShadow = false;
+  return {m, x: -14 + R() * 22, z: -5 - R() * 22, y0: 9 + R() * 3, v: 1.6 + R() * 1.6, d: R() * .9, r: R() * 6}; });
+
+/* ============ [8c] BUMI (adegan 5) — scene terpisah, garis pantai Natural Earth ============ */
+const SG = new THREE.Scene(), camG = new THREE.PerspectiveCamera(36, W / H, 1, 8000);
+const arahLL = (lon, lat) => { const p = (lon + 180) * DEG, th = (90 - lat) * DEG; return V3(-Math.cos(p) * Math.sin(th), Math.cos(th), Math.sin(p) * Math.sin(th)); };
+const texBumi = (() => { const w = 4096, h = 2048, c = kanvas(w, h), x = c.getContext('2d'), dc = kanvas(w, h), y = dc.getContext('2d'), r = rng(5);
+  const g = x.createLinearGradient(0, 0, 0, h); g.addColorStop(0, '#173F6A'); g.addColorStop(.5, '#0F5A92'); g.addColorStop(1, '#173F6A'); x.fillStyle = g; x.fillRect(0, 0, w, h);
+  const D = window.DARATAN; if (D) { y.fillStyle = '#4F7C40'; D.cincin.forEach(s => { const a = s.split(',').map(Number); let lo = a[0], la = a[1]; y.beginPath(); y.moveTo((lo / D.skala + 180) / 360 * w, (90 - la / D.skala) / 180 * h);
+      for (let i = 2; i < a.length; i += 2) { lo += a[i]; la += a[i + 1]; y.lineTo((lo / D.skala + 180) / 360 * w, (90 - la / D.skala) / 180 * h); } y.closePath(); y.fill(); }); }
+  y.globalCompositeOperation = 'source-atop';
+  for (let j = 0; j < h; j += 8) { const lat = 90 - j / h * 180, kering = clamp(1 - Math.abs(Math.abs(lat) - 23) / 12), dingin = clamp((Math.abs(lat) - 50) / 20);
+    y.fillStyle = `rgba(${lerp(70, 190, kering) | 0},${lerp(122, 160, kering) | 0},${lerp(60, 105, kering) | 0},${.35 + .4 * kering})`; y.fillRect(0, j, w, 8);
+    if (dingin > 0) { y.fillStyle = `rgba(120,130,105,${dingin * .5})`; y.fillRect(0, j, w, 8); } }
+  for (let k = 0; k < 60000; k++) { y.fillStyle = r() < .5 ? `rgba(30,60,25,${r() * .18})` : `rgba(170,150,100,${r() * .14})`; y.fillRect(r() * w, r() * h, 2 + r() * 10, 2 + r() * 6); }
+  x.drawImage(dc, 0, 0);
+  x.fillStyle = 'rgba(238,243,248,.96)'; x.fillRect(0, h * .935, w, h * .065); x.fillRect(0, 0, w, h * .03);
+  return tekstur(c); })();
+const texAwan = (() => { const w = 1024, h = 512, c = kanvas(w, h), x = c.getContext('2d'), d = x.createImageData(w, h), r = rng(12);
+  const L = [8, 16, 32, 64, 128].map(sz => ({sz, v: Array.from({length: (sz * 2 + 1) * (sz + 1)}, r)}));
+  const nilai = (u, v) => { let s = 0, a = .5; L.forEach(({sz, v: T}) => { const W2 = sz * 2, fx = u * W2, fy = v * sz, ix = fx | 0, iy = fy | 0, tx = fx - ix, ty = fy - iy,
+      at = (i, j) => T[(j % (sz + 1)) * (W2 + 1) + (i % W2)]; s += a * lerp(lerp(at(ix, iy), at(ix + 1, iy), tx), lerp(at(ix, iy + 1), at(ix + 1, iy + 1), tx), ty); a *= .55; }); return s; };
+  for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) { const n = nilai(i / w, j / h + .03 * Math.sin(i / w * 40)), lat = Math.abs(j / h - .5) * 2, band = .75 + .25 * Math.cos(lat * 9),
+      a = clamp((n * band - .5) * 3.2), k = (j * w + i) * 4; d.data[k] = d.data[k + 1] = d.data[k + 2] = 255; d.data[k + 3] = 255 * a; }
+  x.putImageData(d, 0, 0); return new THREE.CanvasTexture(c); })();
+const BUMI = new THREE.Mesh(new THREE.SphereGeometry(100, 128, 64), new THREE.MeshStandardMaterial({map: texBumi, roughness: .75, metalness: 0}));
+const AWAN = new THREE.Mesh(new THREE.SphereGeometry(101.2, 96, 48), new THREE.MeshStandardMaterial({map: texAwan, transparent: true, depthWrite: false, roughness: 1, opacity: .7}));
+const ATMOS = new THREE.Mesh(new THREE.SphereGeometry(106, 64, 32), new THREE.ShaderMaterial({side: THREE.BackSide, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false,
+  vertexShader: 'varying vec3 vN,vV;void main(){vec4 mv=modelViewMatrix*vec4(position,1.);vN=normalize(normalMatrix*normal);vV=normalize(-mv.xyz);gl_Position=projectionMatrix*mv;}',
+  fragmentShader: 'varying vec3 vN,vV;void main(){float f=pow(clamp(1.-abs(dot(vN,vV))*1.05,0.,1.),2.2);gl_FragColor=vec4(vec3(.35,.65,1.)*f*2.2,f);}'}));
+const sunG = new THREE.DirectionalLight(0xffffff, 2.1); sunG.position.copy(arahLL(150, 18)).multiplyScalar(500);
+SG.add(BUMI, AWAN, ATMOS, sunG, new THREE.AmbientLight(C('#4A5F86'), .55), camG);
+{ const n = 2500, P = new Float32Array(n * 3), r = rng(3); for (let i = 0; i < n; i++) { const v = V3(r() - .5, r() - .5, r() - .5).normalize().multiplyScalar(3500); P.set([v.x, v.y, v.z], i * 3); }
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(P, 3)); SG.add(new THREE.Points(g, new THREE.PointsMaterial({color: 0xffffff, size: 2.2, sizeAttenuation: false}))); }
+const GRESIK = [112.65, -7.15], KOTA = [[139.7, 35.7], [121.5, 31.2], [103.8, 1.35], [151.2, -33.9], [72.9, 19.1], [55.3, 25.3], [-122.4, 37.8], [4.9, 52.4]];
+const mBusur = new THREE.MeshBasicMaterial({color: C('#FFC86A').multiplyScalar(3)});
+const BUSUR = KOTA.map(([lo, la]) => { const a = arahLL(...GRESIK), b = arahLL(lo, la), ang = a.angleTo(b), P = [];
+  for (let i = 0; i <= 64; i++) { const u = i / 64, v = a.clone().multiplyScalar(Math.sin((1 - u) * ang)).add(b.clone().multiplyScalar(Math.sin(u * ang))).divideScalar(Math.sin(ang));
+    P.push(v.multiplyScalar(100.6 + 26 * ang * Math.sin(Math.PI * u))); }
+  const m = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(P), 64, .38, 6), mBusur); SG.add(m);
+  const titik = new THREE.Mesh(new THREE.SphereGeometry(1.1, 12, 8), mBusur); titik.position.copy(b.clone().multiplyScalar(100.8)); SG.add(titik); return {m, titik}; });
+{ const g = new THREE.Mesh(new THREE.SphereGeometry(1.8, 16, 12), new THREE.MeshBasicMaterial({color: C('#7FF0FF').multiplyScalar(4)})); g.position.copy(arahLL(...GRESIK).multiplyScalar(101)); SG.add(g); }
+
+/* ============ [9] KAMERA — beberapa shot (potongan = dip ke gelap) ============ */
+const SHOT = [
+  {a: 0, keys: [[0, [12.6, 1.6, 14], [-4, 72, -165]], [2.8, [9.5, 6, 11], [-8, 66, -165]], [4.6, [4.5, 13.2, 10.5], [-14, 48, -165]], [6.6, [1.6, 12.95, 8], [-11, 41, -165]],
+    [T2 - .2, [.95, 12.95, 6.3], [-12, 40, -165]], [T2 + 2.6, [2, 24, -50], [-8, 44, -176]], [T3, [16, 30, -112], [-8, 38, -176]],
+    [T3 + 2.6, [24, 30, -126], [-4, 32, -172]], [T3 + 5.4, [30, 16, -132], [10, 10, -156]], [T4 - .1, [24, 6, -126], [13, 2.2, -137]]]},
+  {a: T4 - .1, lin: true, keys: [[T4 - .1, [.8, 11.5, 4.2], [-2.5, 15.5, -10]], [T4 + 3.8, [.9, 11.65, 4.2], [-2.55, 16, -10]], [T5 - .2, [1.0, 11.8, 4.15], [-2.6, 16.4, -10]],
+    [T5 + 2.3, [10, 34, 36], [-6, 22, -130]], [TG, [26, 85, 80], [-6, 14, -120]]]}];
 function catmull(a, b, c, d, k) { return b.map((_, i) => .5 * (2 * b[i] + (c[i] - a[i]) * k + (2 * a[i] - 5 * b[i] + 4 * c[i] - d[i]) * k * k + (3 * b[i] - a[i] - 3 * c[i] + d[i]) * k * k * k)); }
-function jalur(t, idx) { const n = KUNCI.length; let i = 0; while (i < n - 2 && t > KUNCI[i + 1][0]) i++;
-  const k = E.s(clamp((t - KUNCI[i][0]) / (KUNCI[i + 1][0] - KUNCI[i][0]))), g = j => KUNCI[clamp(j, 0, n - 1)][idx];
+function jalur(K, t, idx) { const n = K.length; let i = 0; while (i < n - 2 && t > K[i + 1][0]) i++;
+  const k = E.s(clamp((t - K[i][0]) / (K[i + 1][0] - K[i][0]))), g = j => K[clamp(j, 0, n - 1)][idx];
   return catmull(g(i - 1), g(i), g(i + 1), g(i + 2), k); }
-function kamera(t) { const p = jalur(t, 1), s = jalur(t, 2);
+function jalurLin(K, t, idx) { const n = K.length; let i = 0; while (i < n - 2 && t > K[i + 1][0]) i++; const k = E.io(clamp((t - K[i][0]) / (K[i + 1][0] - K[i][0]))); return K[i][idx].map((v, j) => lerp(v, K[i + 1][idx][j], k)); }
+function kamera(t) { const sh = t < SHOT[1].a ? SHOT[0] : SHOT[1], J = sh.lin ? jalurLin : jalur, p = J(sh.keys, t, 1), s = J(sh.keys, t, 2);
   cam.position.set(p[0] + nz(t * .5, 1) * .08, p[1] + nz(t * .6, 2) * .06, p[2] + nz(t * .5, 3) * .08);
   cam.lookAt(s[0], s[1], s[2]); cam.updateMatrixWorld(); }
+function kameraBumi(t) { const k = E.out(seg(t, TG, DUR)), lon = lerp(104, 122, k), lat = lerp(-14, 4, k), d = lerp(380, 500, k);
+  camG.position.copy(arahLL(lon, lat)).multiplyScalar(d); camG.up.set(0, 1, 0); camG.lookAt(0, lerp(14, 22, k), 0); camG.updateMatrixWorld(); }
 
 /* ============ [10] TEKS ============ */
 const proyeksiDunia = (x, y, z) => { const v = V3(x, y, z).project(cam); return [(v.x * .5 + .5) * W, (-v.y * .5 + .5) * H]; };
-const L_CO2 = label({dx: -170, dy: 150, teks: 'CO₂', warna: PAL.co2, font: `'${FONT.judul}'`, ukuran: 76, tebal: 400});
-const L_MENTERI = label({dx: 170, dy: -210, teks: 'Menperin Sarmuji', warna: PAL.label, font: `'${FONT.judul}'`, ukuran: 60, tebal: 400});
+const lab = (teks, warna, dx, dy, uk = 60) => label({dx, dy, teks, warna, font: `'${FONT.judul}'`, ukuran: uk, tebal: 400});
+const L_CO2 = lab('CO₂', PAL.co2, -170, 150, 76), L_MENTERI = lab('Menperin Sarmuji', PAL.label, 170, -210);
+const L_CCU = lab('penangkap CO₂ (CCU)', PAL.ccu, -160, -200), L_SODA = lab('soda ash', PAL.label, -150, -230, 64), L_KACA = lab('kaca', PAL.ccu, 150, -200, 70);
+const L_M2 = lab('Menperin Sarmuji', PAL.label, 190, -150);
 let subY = H * .7;
+const muncul = (el, a, b, t) => { const k = seg(t, a, a + .45) * (1 - seg(t, b, b + .4)); el.style.opacity = k; el.style.transform = `translateY(${(1 - E.out(seg(t, a, a + .6))) * 40}px)`; el.style.filter = `blur(${(1 - k) * 8}px)`; return k; };
+const subGeser = t => Math.max(E.io(seg(t, MOMEN.menteri - .6, MOMEN.menteri)) * (1 - seg(t, T2 - .2, T2 + .4)), seg(t, T4 - .1, T4 + .3) * (1 - seg(t, T5 + .3, T5 + 1)));
 
 /* ============ [11] SCENE ============ */
+const LANGIT0 = {z: C(PAL.zenit), m: C(PAL.tengah), h: C(PAL.cakrawala), s: C(PAL.matahari).multiplyScalar(2.2), kw: C(PAL.kabut), ks: C(PAL.kabutMatahari).multiplyScalar(.9), sun: ARAH_MATAHARI.clone(), ml: C(PAL.matahari)};
+const LANGIT1 = {z: C('#1F5FBF'), m: C('#5E9FE0'), h: C('#B9DBF4'), s: C('#FFF6E6').multiplyScalar(2.2), kw: C('#A9C6E4'), ks: C('#FFF1DA'), sun: V3(.5, .58, -.64).normalize(), ml: C('#FFF3E2')};
 function gambar(t) {
   UL.uT.value = t;
+  const kB = sstep(T5 + .1, T5 + 2.6, t);                                    // 0 = senja berasap → 1 = langit biru bersih
+  UL.uZen.value.copy(LANGIT0.z).lerp(LANGIT1.z, kB); UL.uMid.value.copy(LANGIT0.m).lerp(LANGIT1.m, kB); UL.uHor.value.copy(LANGIT0.h).lerp(LANGIT1.h, kB); UL.uSunC.value.copy(LANGIT0.s).lerp(LANGIT1.s, kB);
+  UK.uKw.value.copy(LANGIT0.kw).lerp(LANGIT1.kw, kB); UK.uKs.value.copy(LANGIT0.ks).lerp(LANGIT1.ks, kB); UK.uKd.value = lerp(.0024, .00045, kB);
+  UK.uSun.value.copy(LANGIT0.sun).lerp(LANGIT1.sun, kB).normalize(); matahari.color.copy(LANGIT0.ml).lerp(LANGIT1.ml, kB); matahari.intensity = lerp(4.2, 4.6, kB);
+  const kAsap = lerp(1, .6, sstep(kt('memangkas'), T3, t)) * (1 - kB);
+  asapM.uniforms.uK.value = kAsap; asapM.uniforms.uKc.value = kAsap * (1 - sstep(kt('ditangkap') - .3, kt('ditangkap') + 1.4, t));
+  kabutM.uniforms.uKab.value = 1 - .75 * kB; debu.material.opacity = .55 * (1 - kB);
   MENTERI.rotation.y = .18 + .05 * Math.sin(t * .5);
   for (let i = 0; i < NUP; i++) { const [a, b, c] = upS[i], f = (t * (.35 + a * .2) + b) % 1;
     upP[i * 3] = 11.2 + (c - .5) * .6 + f * 1.2; upP[i * 3 + 1] = 1.2 + f * (3 + a * 2); upP[i * 3 + 2] = 4.2 + (a - .5) * .8 - f * 1.5; }
@@ -359,44 +485,81 @@ function gambar(t) {
   for (let i = 0; i < NDB; i++) { const [a, b, c] = dbS[i];
     dbP[i * 3] = ((a * 60 - t * (.6 + c * .5)) % 60 + 60) % 60 - 30; dbP[i * 3 + 1] = .5 + b * 14 + Math.sin(t * .7 + a * 20) * .4; dbP[i * 3 + 2] = 14 - c * 40; }
   dbG.attributes.position.needsUpdate = true;
+  // CCU: kerah terpasang, sinar-x cerobong, partikel CO₂, karung & kaca
+  const kKerah = E.back(seg(t, T3 + .1, T3 + 1.1)); KERAH.scale.setScalar(Math.max(kKerah, .001)); KERAH.visible = kKerah > .01; PIPA.visible = t > T3 + .5;
+  PIPA.scale.setScalar(1); const kX = sstep(T3 + .4, T3 + 1.3, t) * (1 - sstep(T4 - .5, T4 - .1, t)); mCerobong2.opacity = 1 - .7 * kX; mCerobong2.depthWrite = kX < .3;
+  const kCO = sstep(kt('ditangkap') - .6, kt('ditangkap') + .2, t) * (1 - .55 * sstep(T4 - .5, T4, t)); coM.opacity = .95 * kCO;
+  for (let i = 0; i < NCO; i++) { const [a, b, c] = coS[i], f = (t * (.11 + a * .05) + b) % 1;
+    if (f < .42) { const u = f / .42, rr = 2.8 * Math.sqrt(c) * (1 - u * .15), an = c * 40 + t * (1 + a); _v.set(C2X + Math.cos(an) * rr, 3 + u * 27, C2Z + Math.sin(an) * rr); }
+    else { JALUR_PIPA.getPointAt((f - .42) / .58, _v); _v.x += (a - .5) * .9; _v.y += (b - .5) * .9; _v.z += (c - .5) * .9; }
+    coP[i * 3] = _v.x; coP[i * 3 + 1] = _v.y; coP[i * 3 + 2] = _v.z; }
+  coG.attributes.position.needsUpdate = true;
+  const kSoda = sstep(kt('soda') - .9, kt('soda'), t);
+  KARUNG.forEach((m, i) => { const z = ((t - T3) * 1.4 + i * KONV_L / NKR) % KONV_L; m.position.z = KONV_Z0 + z; m.visible = kSoda > .01 && t > T3; m.scale.set(1.3 * kSoda, .55 * kSoda, .85 * kSoda); });
+  KACA.forEach((p, i) => { const k = E.back(seg(t, kt('kaca') - .5 + i * .08, kt('kaca') + .1 + i * .08)); p.visible = k > .01; p.scale.set(Math.max(k, .01), Math.max(k, .01), 1); });
+  // truk lalu-lalang, koin cuan
+  TRUK.forEach(({g, arah, x, f}) => { const z = 20 - ((t * 7 + f * 190) % 190); g.position.set(x, 0, arah > 0 ? z : -170 - z); g.rotation.y = arah > 0 ? 0 : Math.PI; });
+  const tc = kt('cuan') - .5;
+  KOIN.forEach(k => { const u = t - tc - k.d; k.m.visible = u > 0 && t < T5 + 1.5; if (!k.m.visible) return; k.m.position.set(k.x + Math.sin(u + k.r) * .4, k.y0 + u * k.v, k.z);
+    k.m.rotation.set(Math.PI / 2 + Math.sin(u * 2 + k.r) * .4, u * 3 + k.r, 0); k.m.scale.setScalar(E.back(clamp(u / .4))); });
 
-  kamera(t);
-  matahari.target.position.set(0, 10, -90); matahari.position.copy(ARAH_MATAHARI).multiplyScalar(260).add(matahari.target.position);
-  REN.setRenderTarget(RT); REN.render(S, cam);
+  // render: dunia pabrik, atau Bumi setelah TG
+  const diBumi = t >= TG;
+  if (diBumi) { kameraBumi(t); BUMI.rotation.y = AWAN.rotation.y * 0; AWAN.rotation.y = (t - TG) * .02;
+    BUSUR.forEach(({m, titik}, i) => { const k = E.io(seg(t, kt('ekonomi') - .3 + i * .12, kt('ekonomi') + .9 + i * .12)); m.geometry.setDrawRange(0, Math.floor(k * 64) * 6 * 6); m.visible = k > 0; titik.visible = k > .97; });
+    REN.setRenderTarget(RT); REN.render(SG, camG); }
+  else { kamera(t); matahari.target.position.set(0, 10, -90); matahari.position.copy(UK.uSun.value).multiplyScalar(260).add(matahari.target.position);
+    REN.setRenderTarget(RT); REN.render(S, cam); }
   pSalin.uniforms.t.value = RT.texture; lewat(pSalin, R2);
   pTerang.uniforms.t.value = R2.texture; pTerang.uniforms.th.value = 1.0; lewat(pTerang, B4a); blur2(B4a, B4b, 1.2); blur2(B4a, B4b, 2.4);
   pSalin.uniforms.t.value = B4a.texture; lewat(pSalin, B8a); blur2(B8a, B8b, 1.6); blur2(B8a, B8b, 3.2);
-  const [sx, sy] = proyeksiDunia(...ARAH_MATAHARI.clone().multiplyScalar(4000).add(cam.position).toArray()), arahK = V3(); cam.getWorldDirection(arahK);
-  const ry = .6 * sstep(.05, .55, arahK.dot(ARAH_MATAHARI));
-  if (ry > 0) { pTerang.uniforms.t.value = R2.texture; pTerang.uniforms.th.value = .55; lewat(pTerang, RSIN); pSinar.uniforms.t.value = RSIN.texture; pSinar.uniforms.sp.value.set(sx / W, 1 - sy / H); lewat(pSinar, RRAY); }
+  let ry = 0;
+  if (!diBumi) { const [sx, sy] = proyeksiDunia(...UK.uSun.value.clone().multiplyScalar(4000).add(cam.position).toArray()), arahK = V3(); cam.getWorldDirection(arahK);
+    ry = .6 * sstep(.05, .55, arahK.dot(UK.uSun.value)) * (1 - .6 * kB);
+    if (ry > 0) { pTerang.uniforms.t.value = R2.texture; pTerang.uniforms.th.value = .55; lewat(pTerang, RSIN); pSinar.uniforms.t.value = RSIN.texture; pSinar.uniforms.sp.value.set(sx / W, 1 - sy / H); lewat(pSinar, RRAY); } }
   pSalin.uniforms.t.value = R2.texture; lewat(pSalin, RTS); blur2(RTS, RTSb, 1.5); blur2(RTS, RTSb, 2.5);
   const U = AKHIR.uniforms;
   U.tS.value = RT.texture; U.tB1.value = B4a.texture; U.tB2.value = B8a.texture; U.tR.value = RRAY.texture; U.tT.value = RTS.texture;
-  U.ry.value = ry; U.fok.value = .45; U.tilt.value = .25; U.ex.value = 1.15; U.bl.value = .5; U.hangat.value = .6;
-  U.gelap.value = 1 - sstep(0, .4, t) * (1 - sstep(MOMEN.DUR - .35, MOMEN.DUR, t));
+  U.ry.value = ry; U.fok.value = .45; U.tilt.value = diBumi ? 0 : .25; U.ex.value = diBumi ? 1.1 : lerp(1.15, 1.05, kB); U.bl.value = diBumi ? .45 : .5; U.hangat.value = diBumi ? .15 : lerp(.6, .2, kB);
+  const dip = c => 1 - sstep(0, .28, Math.abs(t - c));
+  U.gelap.value = Math.max(1 - sstep(0, .4, t), sstep(DUR - .5, DUR, t), dip(T4 - .1), dip(TG));
   lewat(AKHIR, null);
 
   // teks
   const tj = $('#tJudul'); tj.style.top = (AMAN.atas + 40) + 'px'; tj.style.letterSpacing = lerp(.14, .04, E.out(seg(t, MOMEN.judulMasuk, MOMEN.judulMasuk + 2.4))) + 'em';
   const aJ = seg(t, MOMEN.judulMasuk, MOMEN.judulMasuk + .5) * (1 - seg(t, MOMEN.judulKeluar, MOMEN.judulKeluar + .5));
-  Object.assign($('#vJudul').style, {top: (AMAN.atas - 110) + 'px', opacity: aJ});
-  const c2 = CEROBONG[1], [ax, ay] = proyeksiDunia(c2[0] - 12, c2[2] + 26, c2[1]);   /* titik di gumpalan asap cerobong tengah */
+  const c2 = CEROBONG[1], [ax, ay] = proyeksiDunia(c2[0] - 12, c2[2] + 26, c2[1]);
   L_CO2.atur(t, MOMEN.co2, MOMEN.co2Hilang, ax, ay);
   const [mx, my] = proyeksiDunia(MENTERI.position.x, PLAT_Y + 1.95, MENTERI.position.z);
-  L_MENTERI.atur(t, MOMEN.menteri, MOMEN.DUR - .3, mx, my);
+  L_MENTERI.atur(t, MOMEN.menteri, T2 - .1, mx, my);
+  L_M2.atur(t, kt('menperin') - .1, kt('kata') - .2, mx, my);
+  const [cx1, cy1] = proyeksiDunia(C2X + 6.6, 31, C2Z + 1); L_CCU.atur(t, kt('ccu') - .1, kt('soda') - .6, cx1, cy1);
+  const [sx1, sy1] = proyeksiDunia(12, 1.9, KONV_Z0 + 10); L_SODA.atur(t, kt('soda') - .05, T4 - .4, sx1, sy1);
+  const [kx1, ky1] = proyeksiDunia(13.4, 2.4, -134); L_KACA.atur(t, kt('kaca') - .05, T4 - .4, kx1, ky1);
+  const aD = muncul($('#tDek'), kt('dekarbonisasi') - .15, T3 - .5, t); muncul($('#tArti'), kt('memangkas') - .1, T3 - .5, t);
+  const aU = muncul($('#tUji'), kt('uji') - .15, T4 - .4, t);
+  const aBb = muncul($('#tBeban'), kt('beban') - .15, T5 - .4, t); $('#coret').style.transform = `scaleX(${E.out(seg(t, kt('beban') + .35, kt('beban') + .75))})`;
+  const aC = muncul($('#tCuan'), kt('sumber') - .1, T5 - .4, t);
+  const aN = muncul($('#tNZ'), kt('targetnya') + .2, DUR + 1, t);
+  Object.assign($('#vJudul').style, {top: (AMAN.atas - 110) + 'px', opacity: Math.max(aJ, aD, aU * .8, aBb, aN)});
   subY = AMAN.bawah - 90;
-  Object.assign($('#vSub').style, {top: (subY - 300) + 'px', opacity: t > .5 && t < 9.6 ? 1 : 0});
+  Object.assign($('#vSub').style, {top: (subY - 300) + 'px', opacity: t > .5 && t < DUR - .6 ? 1 : 0});
 }
 
 S.traverse(o => { if (o.material) [].concat(o.material).forEach(kabutkan); });
 
 const SCENE = {
-  dur: MOMEN.DUR,
+  dur: DUR,
   kata: window.KATA || KATA,
-  sub: {gaya: 'polos', maks: 4, font: `800 62px '${FONT.sub}'`, warna: PAL.teks, aksen: PAL.aksen, kunci: ['karbon', 'dioksida', 'panas', 'industri', 'bumi', 'adem'],
-        y: t => ({x: lerp(W / 2, W * .62, E.io(seg(t, MOMEN.menteri - .6, MOMEN.menteri))), y: subY})},
-  audio: {vo: [{src: 'assets/audio/vo-01.mp3', at: .4, teks: 'Asap pabrik ini, isinya karbon dioksida, gas yang bikin Bumi makin panas! Terus, gimana industri tetap jalan, tapi Bumi tetap adem?'}],
-          sfx: [], music: null},
+  sub: {gaya: 'polos', maks: 4, font: `800 62px '${FONT.sub}'`, warna: PAL.teks, aksen: PAL.aksen, kunci: ['karbon', 'dioksida', 'panas', 'industri', 'bumi', 'adem', 'dekarbonisasi', 'emisi', 'ccu', 'soda', 'ash', 'kaca', 'petrokimia', 'gresik', 'menperin', 'sarmuji', 'cuan', 'bersih', 'ekonomi', 'jalan'],
+        y: t => ({x: lerp(W / 2, W * .62, subGeser(t)), y: subY})},
+  audio: {vo: [
+      {src: 'assets/audio/vo-01.mp3', at: .4, teks: 'Asap pabrik ini, isinya karbon dioksida, gas yang bikin Bumi makin panas! Terus, gimana industri tetap jalan, tapi Bumi tetap adem?'},
+      {src: 'assets/audio/vo-02.mp3', at: 8.8, teks: 'Jawabannya: dekarbonisasi! Artinya, memangkas emisi karbon dari industri.'},
+      {src: 'assets/audio/vo-03.mp3', at: 14.3, teks: 'Salah satu jurusnya: teknologi CCU. Karbon ditangkap, lalu diolah jadi soda ash, bahan baku kaca. Uji cobanya di Petrokimia Gresik.'},
+      {src: 'assets/audio/vo-04.mp3', at: 23.1, teks: 'Makanya Menperin Sarmuji fokus banget. Kata beliau, dekarbonisasi nggak harus jadi beban, malah bisa jadi sumber cuan!'},
+      {src: 'assets/audio/vo-05.mp3', at: 30.8, teks: 'Targetnya, industri bebas emisi bersih tahun dua ribu lima puluh. Bumi bersih, ekonomi tetap jalan!'}],
+    sfx: SFX, music: null},
   muat: () => Promise.all([document.fonts.load(`400 100px '${FONT.judul}'`), document.fonts.load(`800 60px '${FONT.sub}'`)]),
   build(tl) { grainOn(.06); wIn(tl, $('#tJudul'), MOMEN.judulMasuk, {st: .12, b: 16, d: .9}); wOut(tl, $('#tJudul'), MOMEN.judulKeluar); },
   frame(t) { gambar(t); }
