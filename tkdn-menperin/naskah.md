@@ -1,5 +1,5 @@
 # Naskah: Kenapa Menperin ngotot soal TKDN?
-Suara: (dipilih di langkah suara) · ElevenLabs · bahasa Indonesia · ±90 detik
+Suara: Jefri - Suara Penjelasan Lembut (1ijzBXcD3AIVH8RGMcQd) · model eleven_v4 · bahasa Indonesia · ±90 detik
 
 | # | Adegan (yang terlihat) | Kalimat VO | ±detik |
 |---|---|---|---|
