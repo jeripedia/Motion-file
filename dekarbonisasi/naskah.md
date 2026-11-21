@@ -21,3 +21,9 @@ Perkiraan: ±80 kata, ±31 detik, ±555 karakter → **±555 kredit ElevenLabs**
 - Sarmuji: pengurangan emisi tidak harus dipandang sebagai beban biaya, bisa jadi "profit center". — CNN Indonesia, 26 Okt 2026
 - Target net zero emission sektor industri 2050 (10 tahun lebih cepat dari target nasional 2060). — RRI, Apr 2026
 - Tidak dipakai: angka "CO₂ turun >99%" (hasil uji lab, belum skala industri).
+
+## Audio terpasang
+- VO: vo-01…vo-05 (asli di assets/audio/asli/, dipercepat 1,12× agar ±38 dtk). Mulai: 0,4 · 8,8 · 14,3 · 23,1 · 30,8.
+- SFX (ElevenLabs): boom (judul & masuk Bumi), whoosh (transisi kamera), ding (dekarbonisasi & cuan).
+- Belum: "cring" kasir & kilau — antrean ElevenLabs penuh saat dibuat.
+- Kredit terpakai: VO 614 + SFX 150 = 764.
