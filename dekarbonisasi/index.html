@@ -173,7 +173,7 @@ const kt = (w, setelah = 0) => { const k = (window.KATA || KATA).find(k => k.t0 
 const VO_AT = [.4, 8.8, 14.3, 23.1, 30.8], [T1, T2, T3, T4, T5] = VO_AT, DUR = 38.3;
 const TG = kt('bumi', T5) - .12;                                   // potong ke bola Bumi tepat di kata "Bumi bersih"
 const MOMEN = { judulMasuk: .4, judulKeluar: kt('karbon') - .15, co2: kt('dioksida') - .05, co2Hilang: kt('terus') - .3,
-  menteri: kt('terus') + .1, DUR };
+  menteri: Math.max(kt('terus') + .1, 6.7), DUR };
 const SFX = [{src: 'assets/audio/sfx-whoosh.mp3', at: 4.6, vol: .35}, {src: 'assets/audio/sfx-whoosh.mp3', at: T2 - .35, vol: .3},
   {src: 'assets/audio/sfx-whoosh.mp3', at: T4 - .3, vol: .28}, {src: 'assets/audio/sfx-whoosh.mp3', at: TG - .45, vol: .4}];
 
