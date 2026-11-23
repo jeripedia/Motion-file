@@ -72,7 +72,7 @@ html,body{margin:0;height:100%;background:#000;overflow:hidden}
 <div id="stage">
 <canvas id="cv" width="1080" height="1920"></canvas>
 <div id="ttl"><div id="tW">KISAH MENPERIN</div><div id="tLine"></div><div id="tC">dikejar <b>orang Mesir</b>!</div></div>
-<div class="lab" id="lb0" style="--c:#ffd27a">Menperin M. Sarmuji</div>
+<div class="lab" id="lb0" style="--c:#ffd27a">M. Sarmuji</div>
 <div id="c2">pasangan <b>suami-istri</b> asal Mesir</div>
 <svg id="mfLab" viewBox="0 0 1080 1920"></svg>
 <div id="mfSub"></div>
@@ -275,7 +275,7 @@ function debu(t,C,depan){X.save();X.globalCompositeOperation='lighter';if(depan)
 const IMG={};
 const muatGambar=(k,src)=>new Promise(r=>{const i=new Image();i.onload=()=>{IMG[k]=i;r();};i.onerror=r;i.src=src;});
 let FIG=null,FW=0,FH=0;
-const FIGH=900,FIGB=1400;                    /* tinggi figur di dunia + garis telapak kaki */
+const PADP=70,FIGH=958,FIGB=1400;   /* PADP: ruang di atas kepala untuk peci */                    /* tinggi figur di dunia + garis telapak kaki */
 function siapkanFigur(){const im=IMG.fig;FW=im.width;FH=im.height;const c=cx2(FW,FH),s=cx2(FW,FH),k=FW*.05;
   c.filter='saturate(1.12) contrast(1.06)';c.drawImage(im,0,0);c.filter='none';
   const tint=(fn,comp,al)=>{s.setTransform(1,0,0,1,0,0);s.globalCompositeOperation='source-over';s.globalAlpha=1;s.filter='none';s.clearRect(0,0,FW,FH);s.drawImage(im,0,0);
@@ -293,10 +293,56 @@ function siapkanFigur(){const im=IMG.fig;FW=im.width;FH=im.height;const c=cx2(FW
    s.globalCompositeOperation='destination-out';s.filter='blur(6px)';s.drawImage(im,k*.35,k*.1);s.filter='none';
    c.save();c.globalCompositeOperation='screen';c.globalAlpha=.35;c.drawImage(s.canvas,0,0);c.restore();}
   FIG=c.canvas;}
+/* ---- busana muslim: badan dilukis ulang dengan kuas anime; KEPALA & WAJAH tetap dari foto asli (tidak diubah) ----
+   baju koko putih gading + bordir emas, peci hitam beludru, sarung marun kotak-kotak. Koordinat = piksel foto. */
+const KOKO={lit:'#ffffff',base:'#f7f1e6',dark:'#dccdb8',sh1:'#bba8a6',sh2:'#7c6a88',rim:'#ffe4c4',bounce:'#ff9878',hi:'#ffffff'};
+const SARUNG={lit:'#c94a62',base:'#8e2438',dark:'#5e1630',sh1:'#4a1028',sh2:'#260818',rim:'#ffc9b0',bounce:'#ff9878',hi:'#ffd0d8'};
+const PECI={lit:'#2c2434',base:'#1a1520',dark:'#0e0b12',sh1:'#0a080e',sh2:'#050408',rim:'#c8a0a0',bounce:'#6a3a4a',hi:'#3a3048'};
+const KULIT_S={lit:'#f4c6a2',base:'#d99f78',dark:'#b07450',sh1:'#8e5440',sh2:'#5a3030',rim:'#ffe4c4',bounce:'#ff9878',hi:'#fff2e6'};
+function buatFigurMuslim(){const im=IMG.foto,w=im.width,h=im.height+PADP,OX=200,OY=200;clr(HC);SS=1;
+  const B=new DOMMatrix().translate(OX,OY+PADP);
+  /* sepatu dari foto */
+  HC.setTransform(B);HC.drawImage(im,0,1000,w,im.height-1000,0,1000,w,im.height-1000);ID(HC);
+  /* sarung kotak-kotak */
+  T=B;organ(P2('M 58 700 L 314 700 C 318 810 314 930 308 1030 C 250 1044 124 1044 72 1030 C 64 930 58 810 58 700 Z'),SARUNG,{k:40,g:[60,700,310,1040],tex:.14,isi:c=>{c.save();
+    c.globalCompositeOperation='multiply';c.fillStyle='rgba(60,10,40,.35)';for(let x=40;x<330;x+=64){c.fillRect(x,690,16,360);}for(let y=716;y<1050;y+=64){c.fillRect(40,y,300,16);}
+    c.globalCompositeOperation='screen';c.fillStyle='rgba(255,200,120,.45)';for(let x=70;x<330;x+=64)c.fillRect(x,690,4,360);for(let y=746;y<1050;y+=64)c.fillRect(40,y,300,4);
+    c.globalCompositeOperation='source-over';c.strokeStyle='rgba(30,4,20,.35)';c.lineWidth=5;c.lineCap='round';
+    [[110,720,100,880,96,1030],[186,720,190,880,184,1036],[262,720,270,880,276,1030]].forEach(q=>{c.beginPath();c.moveTo(q[0],q[1]);c.quadraticCurveTo(q[2],q[3],q[4],q[5]);c.stroke();});
+    c.restore();}});
+  /* lengan baju (menjuntai di sisi badan) + tangan */
+  const LKI=pipa([78,292,52,400,40,520,44,640],74,60),LKA=pipa([296,290,322,400,334,520,330,640],74,60);
+  T=B;organ(LKI,KOKO,{k:20,lw:2.6,g:[30,300,90,640]});organ(LKA,KOKO,{k:20,lw:2.6,g:[290,300,360,640]});
+  [[44,674],[330,674]].forEach(([x,y])=>{T=B.translate(x,y);organ(P2('M 0 -34 C 24 -34 32 -10 30 10 C 28 32 14 42 0 42 C -16 42 -30 30 -30 8 C -30 -14 -22 -34 0 -34 Z'),KULIT_S,{k:10,lw:2.4,g:[-30,-34,30,42]});});
+  /* badan baju koko */
+  T=B;organ(P2('M 128 230 C 106 244 86 256 72 276 C 62 300 70 330 74 380 C 76 480 70 600 64 716 C 130 732 244 732 310 716 C 304 600 298 480 300 380 C 304 330 312 300 302 276 C 288 256 268 244 214 230 Z'),KOKO,{k:56,g:[50,240,330,720],tex:.12,isi:c=>{c.save();c.lineCap='round';
+    /* lipatan kain */
+    c.strokeStyle='rgba(140,110,140,.28)';c.lineWidth=5;[[96,420,90,560,96,712],[262,430,272,580,270,712],[120,300,108,360,112,420]].forEach(q=>{c.beginPath();c.moveTo(q[0],q[1]);c.quadraticCurveTo(q[2],q[3],q[4],q[5]);c.stroke();});
+    /* plaket + kancing emas */
+    c.fillStyle='rgba(240,230,214,.9)';c.beginPath();c.moveTo(156,250);c.lineTo(186,250);c.lineTo(184,716);c.lineTo(154,716);c.closePath();c.fill();
+    c.strokeStyle='#c9993f';c.lineWidth=3;c.stroke();
+    for(let y=300;y<700;y+=70){c.fillStyle='#e3b65a';c.beginPath();c.arc(170,y,7,0,TAU);c.fill();c.strokeStyle='#8a6024';c.lineWidth=2;c.stroke();c.fillStyle='rgba(255,255,255,.8)';c.beginPath();c.arc(168,y-2,2.2,0,TAU);c.fill();}
+    /* bordir emas: sulur di dada kiri-kanan plaket */
+    c.strokeStyle='rgba(206,160,72,.75)';c.lineWidth=2.4;
+    for(const sx of [-1,1]){const x0=170+sx*22;for(let k=0;k<4;k++){const y=278+k*40;c.beginPath();c.moveTo(x0,y);c.quadraticCurveTo(x0+sx*22,y+4,x0+sx*16,y+24);c.stroke();
+      c.beginPath();c.arc(x0+sx*20,y+8,3.5,0,TAU);c.stroke();}
+      c.beginPath();c.moveTo(x0,264);c.lineTo(x0,450);c.stroke();}
+    /* saku dada */
+    c.strokeStyle='rgba(150,120,130,.55)';c.lineWidth=3;c.strokeRect(236,330,58,50);c.strokeStyle='rgba(206,160,72,.8)';c.beginPath();c.moveTo(236,336);c.lineTo(294,336);c.stroke();
+    kilau(c,[[80,300,7,3.5,-1]],[[70,330,62,400,60,460,9]]);c.restore();}});
+  /* kepala & wajah: dari foto asli, tidak diubah */
+  HC.save();HC.setTransform(B);HC.beginPath();HC.moveTo(30,-10);HC.lineTo(320,-10);HC.lineTo(320,186);HC.lineTo(226,204);HC.lineTo(220,240);HC.lineTo(118,240);HC.lineTo(112,204);HC.lineTo(30,186);HC.closePath();HC.clip();HC.drawImage(im,0,0);HC.restore();ID(HC);
+  /* kerah berdiri (shanghai) menutupi pangkal leher */
+  T=B;organ(P2('M 118 222 C 146 238 196 238 224 222 L 226 248 C 198 264 144 264 116 248 Z'),KOKO,{k:10,lw:2.2,g:[118,222,226,262],isi:c=>{c.strokeStyle='#c9993f';c.lineWidth=3;c.beginPath();c.moveTo(118,246);c.quadraticCurveTo(170,264,224,246);c.stroke();}});
+  /* peci hitam beludru */
+  T=B;organ(P2('M 86 64 C 84 40 86 10 92 -8 C 122 -22 218 -22 248 -8 C 254 10 256 40 254 64 C 210 52 130 52 86 64 Z'),PECI,{k:18,lw:2.4,g:[86,-22,254,64],tex:.08,isi:c=>{
+    c.fillStyle='rgba(90,76,110,.4)';c.beginPath();c.ellipse(170,-10,78,10,0,0,TAU);c.fill();
+    c.save();c.filter='blur(4px)';c.fillStyle='rgba(150,130,170,.35)';c.beginPath();c.ellipse(118,20,10,28,0,0,TAU);c.fill();c.restore();}});
+  const cv=kanvas(w,h);cv.getContext('2d').drawImage(HC.canvas,OX,OY,w,h,0,0,w,h);IMG.fig=cv;clr(HC);}
 /* posisi dunia: figur berdiri di tengah, kaki alas di y=FIGB */
 const fsk=()=>FIGH/FH, fx0=()=>540-FW*fsk()/2, fy0=()=>FIGB-FIGH;
 /* titik penting dalam koordinat gambar (px gambar asli) */
-const WAJAH=[165,140],MULUT=[162,188],PINGGUL=665,CELAH=182;   /* PINGGUL/CELAH: garis potong kaki untuk animasi jalan */
+const WAJAH=[165,140+PADP],MULUT=[162,188+PADP],PINGGUL=735,CELAH=182;   /* PINGGUL/CELAH: garis potong kaki untuk animasi jalan */
 const kePeta=p=>[fx0()+p[0]*fsk(),fy0()+p[1]*fsk()];
 
 /* ================= 5. ILUSTRASI NASKAH =================
@@ -376,7 +422,7 @@ function kamera(t){let i=0;while(i<KAM.length-2&&t>KAM[i+1][0])i++;const a=KAM[i
 const bicaraAmp=t=>{const K=SCENE.kata||window.KATA||[];for(const w of K)if(t>=w.t0-.05&&t<=w.t1+.05)return 1;return 0;};
 
 /* ================= 7. LABEL nama (pil + garis ke dada) ================= */
-const LAB=[{el:$('#lb0'),p:[106,600],kiri:true,y:1120,a:WAKTU.label}];
+const LAB=[{el:$('#lb0'),p:[110,470],kiri:true,y:1000,a:WAKTU.label}];
 function pasangLabel(t,M){LAB.forEach(L=>{const k=E.out(seg(t,L.a,L.a+.5));const pw=kePeta(L.p),q=M.transformPoint(new DOMPoint(...pw));const el=L.el,w=el.offsetWidth,h=el.offsetHeight;
   const ly=L.y,lx=L.kiri?AMAN.kiri:AMAN.kanan-w;el.style.opacity=E.out(seg(t,L.a+.2,L.a+.55));
   el.style.transform=`translate(${lx}px,${ly-h/2+(1-k)*14}px)`;if(k<=0)return;const ex=L.kiri?lx+w*.5:lx,ey=ly-h/2;
@@ -400,7 +446,7 @@ function frame1(t){const C=kamera(t);$('#ttl').style.opacity=1;$('#c2').style.op
   clr(BL);BL.filter='brightness(.9) contrast(3)';BL.drawImage(HC.canvas,0,0,270,480);BL.filter='none';
   X.save();X.globalCompositeOperation='screen';X.filter='blur(10px)';X.globalAlpha=.22;X.drawImage(BL.canvas,0,0,W,H);X.restore();
   /* bintang kilau di tepi rim (sepatu, kerah, plat nama) */
-  [[230,1050,0],[70,110,.4],[350,560,.7],[40,300,.2]].forEach(([x,y,o])=>{const p=M.transformPoint(new DOMPoint(...kePeta([x,y]))),ph=(t*.8+o)%1;bintang(X,p.x,p.y,7*Math.sqrt(C.s),Math.sin(Math.PI*ph)**3*.9);});
+  [[230,1120,0],[120,30,.4],[350,560,.7],[172,500,.2]].forEach(([x,y,o])=>{const p=M.transformPoint(new DOMPoint(...kePeta([x,y]))),ph=(t*.8+o)%1;bintang(X,p.x,p.y,7*Math.sqrt(C.s),Math.sin(Math.PI*ph)**3*.9);});
   bicara(t,C,bicaraAmp(t)*sstep(.2,.6,t));
   awan(t,C,2);debu(t,C,true);pasangLabel(t,M);
   balon(t,C,E.out(seg(t,WAKTU.balon,WAKTU.balon+.6)));
@@ -596,7 +642,7 @@ const SCENE={
         {w:'obat',t0:16.1,t1:16.4},{w:'masuk',t0:16.4,t1:16.8},{w:'angin!',t0:16.8,t1:17.5}],
   sub:{gaya:'pil',maks:3,y:.775,font:"800 54px Murecho",warna:'#FFF6EE',aksen:'#FFD27A',kunci:['dikejar-kejar','Mesir','Tanah','Suci','jamu','suami-istri','mengejar','obat','masuk','angin']},
   audio:{vo:[],sfx:[],music:null},
-  muat:()=>Promise.all([muatGambar('fig','assets/gambar/sarmuji.png')]),
+  muat:()=>Promise.all([muatGambar('foto','assets/gambar/sarmuji.png'),document.fonts.ready]).then(buatFigurMuslim),
   build(tl){grainOn(.08,'overlay');const e=$('#tW');e.innerHTML=[...e.textContent].map(ch=>ch===' '?'<span>&nbsp;</span>':`<span>${ch}</span>`).join('');},
   frame
 };
