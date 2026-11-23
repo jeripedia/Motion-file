@@ -31,6 +31,7 @@
   JANGAN menulis tanda penanda bagian (at-HEAD/at-BODY/at-SCRIPT) di dalam komentar: perakit memotong file di situ.
 ===================================================================================== -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Murecho:wght@600;800;900&family=RocknRoll+One&display=swap">
+<script src="assets/indonesia.js"></script>
 <style>
 #stage{background:#2a1a5c}
 #cv{position:absolute;left:0;top:0;width:1080px;height:1920px}
@@ -44,9 +45,15 @@
 #tC{display:inline-block;margin-top:20px;padding:12px 34px 15px;border-radius:999px;background:rgba(40,12,52,.66);border:2px solid rgba(255,214,180,.45);
   font:800 50px/1.1 Murecho,sans-serif;color:#fff4ea;white-space:nowrap;opacity:0;box-shadow:0 10px 30px rgba(20,4,30,.35)}
 #tC b{font-weight:900;color:#ffd27a}
-#c2{position:absolute;left:50%;top:250px;z-index:30;padding:12px 34px 15px;border-radius:999px;background:rgba(40,12,52,.7);border:2px solid rgba(255,214,180,.45);
+#c2,.chip{position:absolute;left:50%;top:250px;z-index:30;padding:12px 34px 15px;border-radius:999px;background:rgba(40,12,52,.7);border:2px solid rgba(255,214,180,.45);
   font:800 50px/1.1 Murecho,sans-serif;color:#fff4ea;white-space:nowrap;opacity:0;box-shadow:0 10px 30px rgba(20,4,30,.35)}
-#c2 b{font-weight:900;color:#ffd27a}
+#c2 b,.chip b{font-weight:900;color:#ffd27a}
+#akhir{position:absolute;left:0;right:0;top:190px;text-align:center;z-index:30;pointer-events:none;opacity:0}
+#aK{display:inline-block;padding:12px 34px 15px;border-radius:999px;background:rgba(40,12,52,.7);border:2px solid rgba(255,214,180,.45);font:800 50px/1.1 Murecho,sans-serif;color:#fff4ea}
+#aK b{color:#ffd27a;font-weight:900}
+.aW{font:400 124px/1.08 'RocknRoll One',sans-serif;letter-spacing:6px;background:linear-gradient(180deg,#ffffff 0%,#fff3e4 45%,#ffc39e 100%);-webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 6px 0 rgba(60,14,60,.55)) drop-shadow(0 0 26px rgba(255,150,130,.55))}
+#aW1{margin-top:26px}
 /* label: pil gelap kecil + titik warna; garisnya digambar di canvas */
 .lab{position:absolute;left:0;top:0;z-index:35;white-space:nowrap;opacity:0;font:800 46px/1 Murecho,sans-serif;color:#fff6ee;
   padding:13px 28px 15px 56px;border-radius:999px;background:rgba(36,10,48,.78);border:2px solid rgba(255,214,180,.38);box-shadow:0 8px 22px rgba(20,4,30,.4)}
@@ -73,7 +80,13 @@ html,body{margin:0;height:100%;background:#000;overflow:hidden}
 <canvas id="cv" width="1080" height="1920"></canvas>
 <div id="ttl"><div id="tW">KISAH MENPERIN</div><div id="tLine"></div><div id="tC">dikejar <b>orang Mesir</b>!</div></div>
 <div class="lab" id="lb0" style="--c:#ffd27a">M. Sarmuji</div>
-<div id="c2">pasangan <b>suami-istri</b> asal Mesir</div>
+<div id="c2" class="chip">pasangan <b>suami-istri</b> asal Mesir</div>
+<div class="chip" id="c2a">Menteri Perindustrian <b>M. Sarmuji</b></div>
+<div class="chip" id="c3a">dipercaya sampai <b>luar negeri</b></div>
+<div class="chip" id="c4a">keanekaragaman hayati <b>terkaya</b></div>
+<div class="chip" id="c5a">kuncinya: <b>teknologi</b> + <b>riset</b></div>
+<div class="chip" id="c5b">produk <b>bernilai tambah</b></div>
+<div id="akhir"><div id="aK">dari <b>jamu masuk angin</b>…</div><div class="aW" id="aW1">INDUSTRI</div><div class="aW" id="aW2">MASA DEPAN</div></div>
 <svg id="mfLab" viewBox="0 0 1080 1920"></svg>
 <div id="mfSub"></div>
 <div id="grain"></div>
@@ -437,7 +450,7 @@ function figur(t,C){clr(HC);if(!FIG)siapkanFigur();
   /* bayangan lembut di bawah alas */
   HC.save();HC.globalAlpha=.45;HC.filter='blur(18px)';HC.fillStyle='#2a1050';HC.beginPath();HC.ellipse(540,FIGB-4,FW*s*.42,26,0,0,TAU);HC.fill();HC.restore();
   HC.drawImage(FIG,fx0(),fy0()-bob,FW*s,FH*s);ID(HC);return M;}
-function frame1(t){const C=kamera(t);$('#ttl').style.opacity=1;$('#c2').style.opacity=0;ID(X);X.globalCompositeOperation='source-over';X.globalAlpha=1;X.filter='none';
+function frame1(t){const C=kamera(t);$('#ttl').style.opacity=1;ID(X);X.globalCompositeOperation='source-over';X.globalAlpha=1;X.filter='none';
   langit(t,C);awan(t,C,0);kota(t,C,sstep(WAKTU.kota[0],WAKTU.kota[1],t)*.95);awan(t,C,1);debu(t,C,false);
   const M=figur(t,C),pc=M.transformPoint(new DOMPoint(540,880));
   {const r=620*C.s,q=X.createRadialGradient(pc.x,pc.y,0,pc.x,pc.y,r);q.addColorStop(0,'rgba(255,190,170,.28)');q.addColorStop(1,'rgba(255,140,170,0)');X.fillStyle=q;X.fillRect(0,0,W,H);}  /* pendar di belakang tokoh */
@@ -460,7 +473,7 @@ function judul(t){const J=WAKTU.judul;$$('#tW span').forEach((e,i)=>{const k=sst
    Pak Sarmuji berjalan cepat ke arah kamera; sepasang suami-istri Mesir berlari mengejar dari belakang.
    Waktu lokal u = t - S2. Semua detik adegan 2 di W2. */
 const S2=WAKTU.dur;
-const W2={muncul:.6,teriak:[1.3,3.6],chip:2.2,keringat:[3.0,6.4],kejar:[.8,6.4],berhenti:[6.0,7.0],minta:6.7,dur:9.5};
+const W2={muncul:4.2,teriak:[5.4,8.6],chip:4.6,keringat:[6.0,10.0],kejar:[4.2,10.0],berhenti:[9.8,11.0],minta:11.3,dur:15.0};
 const HY=1130;                                   /* cakrawala adegan 2 */
 const ROBE={lit:'#ffffff',base:'#f3e9f2',dark:'#cdb6da',sh1:'#a78ec4',sh2:'#6c5494',rim:'#ffe4c4',bounce:'#ff9878',hi:'#ffffff'};
 const KULIT_M={lit:'#f6c9a0',base:'#d39468',dark:'#a8683f',sh1:'#8e5040',sh2:'#5a2e34',rim:'#ffe4c4',bounce:'#ff9878',hi:'#fff2e6'};
@@ -618,23 +631,278 @@ function frame2(u,t){ID(X);X.globalCompositeOperation='source-over';X.globalAlph
   debu(t,C,true);
   {let q=X.createRadialGradient(540,1000,420,540,1000,1300);q.addColorStop(0,'rgba(0,0,0,0)');q.addColorStop(1,'rgba(14,4,30,.5)');X.fillStyle=q;X.fillRect(0,0,W,H);
    q=X.createLinearGradient(0,0,0,460);q.addColorStop(0,'rgba(16,8,40,.6)');q.addColorStop(1,'rgba(16,8,40,0)');X.fillStyle=q;X.fillRect(0,0,W,460);}
-  const ck=E.back(seg(u,W2.chip,W2.chip+.5)),co=seg(u,W2.chip,W2.chip+.25)*(1-seg(u,W2.minta-.5,W2.minta-.1));$('#c2').style.opacity=co;$('#c2').style.transform=`translateX(-50%) translateY(${(1-ck)*24}px) scale(${.9+.1*ck})`;}
+}
 
-/* pengatur adegan: adegan 1 → (balon membesar menembus layar) → adegan 2 */
+/* ================= 8c. ADEGAN 3–6 =================
+   Waktu tiap adegan diturunkan dari panjang klip suara (vo-03 … vo-06). */
+const S3=S2+W2.dur,S4=S3+10.6,S5=S4+14.6,S6=S5+10.3,DUR=S6+8.6;
+const DAUN_KK={lit:'#c8f590',base:'#5cb35e',dark:'#2c7a4c',sh1:'#20604a',sh2:'#0f3a34',rim:'#ffe4c4',bounce:'#ff9878',hi:'#f6ffe6'};
+const DAUN_KB={lit:'#9ee07a',base:'#2f8f50',dark:'#18603e',sh1:'#124c3a',sh2:'#082c28',rim:'#ffe4c4',bounce:'#ff9878',hi:'#eaffd8'};
+const BATANG={lit:'#b8d88a',base:'#6a8a4e',dark:'#465a3e',sh1:'#4a3a5a',sh2:'#2a1a3a',rim:'#ffe4c4',bounce:'#ff9878',hi:'#f0ffe0'};
+const TANAH={lit:'#c89070',base:'#8a5a46',dark:'#5a3a3a',sh1:'#4a2a3a',sh2:'#2a1428',rim:'#ffd0b0',bounce:'#ff9878',hi:'#ffe0c8'};
+const DARAT={lit:'#b6f08a',base:'#4fae6a',dark:'#2a7a5a',sh1:'#1f5e56',sh2:'#123a44',rim:'#ffe4c4',bounce:'#ff9878',hi:'#f0ffe0'};
+const AMBER={lit:'#ffe09a',base:'#e0922e',dark:'#9a5420',sh1:'#743818',sh2:'#401c10',rim:'#ffe4c4',bounce:'#ff9878',hi:'#fff6e0'};
+const HITAM={lit:'#6a5a78',base:'#2e2638',dark:'#18121e',sh1:'#100c16',sh2:'#060408',rim:'#ffd9c0',bounce:'#6a3a4a',hi:'#b0a0c8'};
+const KAYUM={lit:'#d8a878',base:'#a06a42',dark:'#6a4028',sh1:'#54301e',sh2:'#2e180e',rim:'#ffe0c0',bounce:'#ff9878',hi:'#ffecd8'};
+const KACA={lit:'#ffffff',base:'#dcefff',dark:'#9cbce8',sh1:'#8a92d0',sh2:'#4c4c96',rim:'#ffe4c4',bounce:'#ff9878',hi:'#ffffff'};
+const EMAS={lit:'#fff0b0',base:'#e8b84a',dark:'#a8742a',sh1:'#80521e',sh2:'#4a2a10',rim:'#ffe4c4',bounce:'#ff9878',hi:'#fffbe8'};
+const HIJAU_B={lit:'#a8f0c0',base:'#2e9a68',dark:'#16664a',sh1:'#0f4e3e',sh2:'#062a24',rim:'#ffe4c4',bounce:'#ff9878',hi:'#eafff2'};
+
+/* ---- lukis sekali ke kanvas sendiri (tanaman, ikon, peta) supaya render tetap cepat ---- */
+function prerender(w,h,fn){clr(HC);const OX=Math.round((1080-w)/2),OY=160;SS=1;fn(new DOMMatrix().translate(OX,OY));
+  const c=kanvas(w,h);c.getContext('2d').drawImage(HC.canvas,OX,OY,w,h,0,0,w,h);clr(HC);return c;}
+const DAUN_P=(L,Wd)=>P2(`M 0 0 C ${Wd} ${-L*.2} ${Wd*.85} ${-L*.75} 0 ${-L} C ${-Wd*.85} ${-L*.75} ${-Wd} ${-L*.2} 0 0 Z`);
+function daunGel(L,Wd,g){const n=40,a=[],b=[];for(let i=0;i<=n;i++){const q=i/n,w=Wd*Math.pow(Math.sin(Math.PI*Math.min(1,q*1.05)),.75)*(1+g*.1*Math.sin(q*30));a.push([w,-L*q]);b.push([-w,-L*q]);}
+  const p=new Path2D();p.moveTo(0,0);a.forEach(v=>p.lineTo(...v));b.reverse().forEach(v=>p.lineTo(...v));p.closePath();return p;}
+function daun(B,x,y,ang,L,Wd,pal,gel=0){const p=gel?daunGel(L,Wd,gel):DAUN_P(L,Wd);T=B.translate(x,y).rotate(ang);
+  organ(p,pal,{k:Wd*.55,lw:2.4,g:[-Wd,-L,Wd,0],tex:.12,isi:c=>{c.save();c.lineCap='round';c.strokeStyle='rgba(16,56,36,.5)';c.lineWidth=3;c.beginPath();c.moveTo(0,-4);c.quadraticCurveTo(Wd*.08,-L*.5,0,-L*.95);c.stroke();
+    c.lineWidth=1.6;c.strokeStyle='rgba(16,56,36,.32)';for(let i=1;i<7;i++){const yy=-L*i/7.5;c.beginPath();c.moveTo(0,yy);c.quadraticCurveTo(Wd*.4,yy-L*.05,Wd*.72,yy-L*.12);c.moveTo(0,yy);c.quadraticCurveTo(-Wd*.4,yy-L*.05,-Wd*.72,yy-L*.12);c.stroke();}
+    kilau(c,[],[[-Wd*.32,-L*.25,-Wd*.42,-L*.45,-Wd*.3,-L*.62,6]]);c.restore();}});}
+const bezPt=(q,u)=>bez(q,u),bezAng=(q,u)=>{const a=bez(q,Math.max(0,u-.01)),b=bez(q,Math.min(1,u+.01));return Math.atan2(b[1]-a[1],b[0]-a[0])*180/Math.PI;};
+const ASET={};
+function buatAset(){
+  /* kumis kucing: batang tegak, daun berpasangan, malai bunga putih-ungu berkumis panjang */
+  ASET.kk=prerender(600,940,B=>{const O=B.translate(300,920),R=rng(31),B0=[];
+    [[-17,620],[-8,700],[1,760],[10,690],[19,600]].forEach(([a,len])=>{const r=a*Math.PI/180,ex=Math.sin(r)*len,ey=-Math.cos(r)*len;B0.push([0,0,ex*.3+(R()-.5)*30,ey*.33,ex*.75,ey*.68,ex,ey]);});
+    B0.forEach(q=>{T=O;organ(pipa(q,16,8),BATANG,{k:6,lw:2.2,g:[-20,0,20,-700]});
+      [.2,.36,.52].forEach((u,i)=>{const [x,y]=bezPt(q,u),an=bezAng(q,u)+90,L=150-i*22;daun(O,x,y,an-58,L,52-i*6,DAUN_KK);daun(O,x,y,an+58,L,52-i*6,DAUN_KK);});});
+    HC.save();HC.setTransform(O);HC.lineCap='round';
+    B0.forEach(q=>{for(let u=.62;u<=1.001;u+=.055){const [x,y]=bezPt(q,u),sk=1-.5*(u-.62)/.38;
+      for(let j=0;j<4;j++){const s=j%2?1:-1,ox=s*(8+j*2)*sk,a0=s*(.5+j*.2);
+        HC.strokeStyle='rgba(214,190,255,.95)';HC.lineWidth=2.2;HC.beginPath();HC.moveTo(x+ox,y);HC.quadraticCurveTo(x+ox+s*40*sk,y-10,x+ox+Math.sin(a0)*70*sk,y-46*sk);HC.stroke();
+        HC.fillStyle='#fff4ff';HC.beginPath();HC.arc(x+ox+Math.sin(a0)*70*sk,y-46*sk,3,0,TAU);HC.fill();
+        HC.fillStyle='#fbf6ff';HC.strokeStyle='#8a6ab8';HC.lineWidth=1.4;HC.beginPath();HC.ellipse(x+ox,y,11*sk,7*sk,s*.5,0,TAU);HC.fill();HC.stroke();}}});
+    HC.restore();});
+  /* keji beling: perdu, daun panjang bergelombang hijau tua mengkilap */
+  ASET.kb=prerender(600,860,B=>{const O=B.translate(300,840),R=rng(47);
+    [[-24,470],[-9,560],[6,590],[21,500]].forEach(([a,len],si)=>{const r=a*Math.PI/180,ex=Math.sin(r)*len,ey=-Math.cos(r)*len,q=[0,0,ex*.3,ey*.35,ex*.7,ey*.7,ex,ey];
+      T=O;organ(pipa(q,18,9),BATANG,{k:6,lw:2.2,g:[-20,0,20,-600]});
+      for(let i=0;i<5;i++){const u=.22+i*.17,[x,y]=bezPt(q,Math.min(u,1)),an=bezAng(q,Math.min(u,1))+90,s=(i+si)%2?1:-1;daun(O,x,y,an+s*(38+R()*16),210-i*16,40-i*2,DAUN_KB,1);}
+      daun(O,ex,ey,a,170,34,DAUN_KB,1);});});
+  /* gundukan tanah + rumput */
+  ASET.tanah=prerender(1080,300,B=>{T=B.translate(540,250);organ(P2('M -560 60 C -420 -60 -200 -110 0 -112 C 200 -110 420 -60 560 60 L 560 120 L -560 120 Z'),TANAH,{k:30,g:[-500,-110,500,60],tex:.2,
+    isi:c=>{c.fillStyle='rgba(40,16,30,.25)';const R=rng(9);for(let i=0;i<120;i++){c.beginPath();c.arc((R()-.5)*1080,-100+R()*200,3+R()*7,0,TAU);c.fill();}}});
+    HC.save();HC.setTransform(B.translate(540,250));const R=rng(12);HC.lineCap='round';
+    for(let i=0;i<260;i++){const x=(R()-.5)*1060,y=-Math.max(0,112-(x*x)/2600)+6+R()*8,h=20+R()*40,a=(R()-.5)*.6;HC.strokeStyle=R()<.5?'#5cb35e':'#8ad46a';HC.lineWidth=3;HC.beginPath();HC.moveTo(x,y);HC.quadraticCurveTo(x+a*20,y-h*.6,x+a*40,y-h);HC.stroke();}
+    HC.restore();});
+  /* peta Nusantara (dari data garis pantai) */
+  const PX=lon=>(lon-94)*20.8+40,PY=lat=>(7-lat)*20.8+24;
+  const darat=new Path2D();(window.NUSA||[]).forEach(r=>{r.forEach(([lo,la],i)=>i?darat.lineTo(PX(lo),PY(la)):darat.moveTo(PX(lo),PY(la)));darat.closePath();});
+  ASET.peta=prerender(1080,430,B=>{T=B;organ(darat,DARAT,{k:7,lw:1.6,g:[0,0,1000,400],tex:.22,isi:c=>{const R=rng(5);
+    for(let i=0;i<2600;i++){const x=R()*1080,y=R()*430;c.fillStyle='rgba(18,80,52,.32)';c.beginPath();c.arc(x,y,2.5+R()*4,0,TAU);c.fill();c.fillStyle='rgba(210,255,170,.16)';c.beginPath();c.arc(x-1,y-1.5,1.6,0,TAU);c.fill();}}});});
+  {const c=cx2(1080,430),R=rng(77);ASET.titik=[];let n=0;while(ASET.titik.length<46&&n<5000){n++;const x=40+R()*1000,y=10+R()*410;if(c.isPointInPath(darat,x,y))ASET.titik.push([x,y,R()]);}}
+  /* ikon: botol minyak atsiri, nilam, rempah */
+  ASET.atsiri=prerender(300,320,B=>{const O=B.translate(150,300);T=O;
+    organ(P2('M -70 0 C -84 0 -90 -10 -90 -26 L -90 -150 C -90 -190 -60 -206 -36 -212 L -36 -236 L 36 -236 L 36 -212 C 60 -206 90 -190 90 -150 L 90 -26 C 90 -10 84 0 70 0 Z'),AMBER,{k:30,g:[-90,-236,90,0],
+      isi:c=>{c.fillStyle='rgba(255,246,228,.94)';c.beginPath();c.roundRect(-66,-140,132,70,12);c.fill();c.fillStyle='#7a3a14';c.font="900 30px Murecho";c.textAlign='center';c.fillText('ATSIRI',0,-96);
+        c.fillStyle='#4fae5a';c.save();c.translate(0,-80);c.scale(.5,.5);c.fill(DAUN);c.scale(-1,1);c.fill(DAUN);c.restore();kilau(c,[[-60,-170,8,4,-1]],[[-70,-150,-74,-90,-72,-40,9]]);}});
+    T=O.translate(0,-236);organ(P2('M -40 0 L 40 0 L 36 -40 C 30 -60 14 -70 0 -110 C -14 -70 -30 -60 -36 -40 Z'),HITAM,{k:12,lw:2.4,g:[-40,-110,40,0]});});
+  ASET.nilam=prerender(320,320,B=>{const O=B.translate(160,300);T=O;organ(pipa([0,0,-4,-60,4,-130,0,-200],14,8),BATANG,{k:5,lw:2,g:[-10,0,10,-200]});
+    [[-58,150,0],[58,150,0],[-30,135,-50],[30,135,-50],[-12,120,-110],[16,110,-120],[0,100,-170]].forEach(([a,L,y])=>daun(O,0,y,a,L,L*.42,DAUN_KK,.6));});
+  ASET.rempah=prerender(340,300,B=>{const O=B.translate(170,250);
+    [[-90,-20,-10],[-60,-70,-14]].forEach(([x,y,a])=>{T=O.translate(x,y).rotate(a);organ(P2('M -110 -22 L 110 -22 C 122 -22 122 22 110 22 L -110 22 C -122 22 -122 -22 -110 -22 Z'),KAYUM,{k:12,lw:2.4,g:[-110,-22,110,22],
+      isi:c=>{c.strokeStyle='rgba(60,30,20,.5)';c.lineWidth=3;for(let i=-90;i<=90;i+=36){c.beginPath();c.moveTo(i,-20);c.lineTo(i+10,20);c.stroke();}}});});
+    T=O.translate(70,-40);organ(P2('M 0 -62 C 40 -62 62 -36 62 0 C 62 36 40 60 0 60 C -40 60 -62 36 -62 0 C -62 -36 -40 -62 0 -62 Z'),KAYUM,{k:18,lw:2.4,g:[-60,-60,60,60],
+      isi:c=>{c.strokeStyle='rgba(220,40,40,.85)';c.lineWidth=7;c.lineCap='round';[[-40,-30,0,-60,30,-20],[-50,10,-10,-20,20,30],[0,40,30,10,50,-10]].forEach(q=>{c.beginPath();c.moveTo(q[0],q[1]);c.quadraticCurveTo(q[2],q[3],q[4],q[5]);c.stroke();});}});
+    [[-10,20,30],[30,30,-20],[-40,40,60]].forEach(([x,y,a])=>{T=O.translate(x,y).rotate(a);organ(P2('M -5 0 L 5 0 L 4 -56 L -4 -56 Z M -14 -56 C -14 -76 14 -76 14 -56 C 14 -48 -14 -48 -14 -56 Z'),HITAM,{k:5,lw:1.8,g:[-14,-76,14,0]});});});
+  /* labu laboratorium, roda gigi, produk jadi, peti bahan mentah */
+  ASET.labu=prerender(360,420,B=>{const O=B.translate(180,400);T=O;
+    organ(P2('M -40 -380 L 40 -380 L 40 -250 L 160 -40 C 172 -14 160 0 134 0 L -134 0 C -160 0 -172 -14 -160 -40 L -40 -250 Z'),KACA,{k:30,g:[-160,-380,160,0],
+      isi:c=>{const g=c.createLinearGradient(0,-170,0,0);g.addColorStop(0,'#9cf07a');g.addColorStop(1,'#2a9a5a');c.fillStyle=g;c.beginPath();c.moveTo(-104,-150);c.quadraticCurveTo(0,-170,104,-150);c.lineTo(170,0);c.lineTo(-170,0);c.closePath();c.fill();
+        c.fillStyle='rgba(255,255,255,.5)';c.beginPath();c.ellipse(0,-158,96,10,0,0,TAU);c.fill();kilau(c,[[-26,-330,6,3,-1.4]],[[-110,-60,-80,-120,-40,-200,10]]);}});
+    HC.save();HC.setTransform(O);HC.strokeStyle='rgba(60,60,120,.6)';HC.lineWidth=3;for(let y=-330;y<-260;y+=22){HC.beginPath();HC.moveTo(-40,y);HC.lineTo(-16,y);HC.stroke();}HC.restore();});
+  ASET.gigi=prerender(300,300,B=>{const O=B.translate(150,150),p=new Path2D();for(let i=0;i<=48;i++){const a=i/48*TAU,r=(i%4<2)?120:96;i?p.lineTo(Math.cos(a)*r,Math.sin(a)*r):p.moveTo(Math.cos(a)*r,Math.sin(a)*r);}
+    p.closePath();p.moveTo(42,0);p.arc(0,0,42,0,TAU,true);T=O;organ(p,EMAS,{k:20,lw:2.4,g:[-120,-120,120,120]});});
+  ASET.produk=prerender(360,420,B=>{const O=B.translate(180,400);
+    T=O.translate(60,0);organ(P2('M -90 0 L -90 -230 L 110 -230 L 110 0 Z'),{lit:'#fff4dc',base:'#f2dcb0',dark:'#c8a878',sh1:'#a88464',sh2:'#6a4c40',rim:'#ffe4c4',bounce:'#ff9878',hi:'#ffffff'},{k:24,g:[-90,-230,110,0],
+      isi:c=>{c.fillStyle='#2e9a68';c.fillRect(-90,-170,200,60);c.fillStyle='#fff';c.font="900 30px Murecho";c.textAlign='center';c.fillText('INDONESIA',10,-128);c.fillStyle='#e8b84a';c.fillRect(-90,-104,200,8);}});
+    T=O.translate(-60,0);organ(P2('M -58 0 C -70 0 -74 -10 -74 -24 L -74 -200 C -74 -236 -40 -252 -24 -262 L -24 -300 L 24 -300 L 24 -262 C 40 -252 74 -236 74 -200 L 74 -24 C 74 -10 70 0 58 0 Z'),HIJAU_B,{k:28,g:[-74,-300,74,0],
+      isi:c=>{c.fillStyle='rgba(255,250,236,.95)';c.beginPath();c.roundRect(-56,-180,112,100,14);c.fill();c.fillStyle='#16664a';c.font="900 26px Murecho";c.textAlign='center';c.fillText('HERBAL',0,-104);
+        c.save();c.translate(0,-140);c.scale(.55,.55);c.fillStyle='#4fae5a';c.fill(DAUN);c.scale(-1,1);c.fill(DAUN);c.restore();kilau(c,[[-50,-220,7,3.5,-1]],[[-60,-200,-64,-120,-62,-40,9]]);}});
+    T=O.translate(-60,-300);organ(P2('M -34 0 L 34 0 L 34 -46 C 34 -56 -34 -56 -34 -46 Z'),EMAS,{k:10,lw:2.2,g:[-34,-56,34,0]});});
+  ASET.peti=prerender(360,320,B=>{const O=B.translate(180,300);
+    [[-100,-150,-30],[-40,-170,-8],[30,-165,14],[90,-150,32]].forEach(([x,y,a])=>daun(O,x,y,a,120,40,DAUN_KK));
+    T=O;organ(P2('M -150 0 L -150 -170 L 150 -170 L 150 0 Z'),KAYUM,{k:24,g:[-150,-170,150,0],tex:.2,isi:c=>{c.strokeStyle='rgba(60,30,16,.55)';c.lineWidth=5;for(let y=-130;y<0;y+=42){c.beginPath();c.moveTo(-150,y);c.lineTo(150,y);c.stroke();}
+      c.lineWidth=10;c.beginPath();c.moveTo(-150,-170);c.lineTo(150,0);c.stroke();}});});
+  /* kawasan industri hijau masa depan (siluet) */
+  ASET.kawasan=(()=>{const c=cx2(1400,520),g=c.createLinearGradient(0,120,0,520);g.addColorStop(0,'#3e2a72');g.addColorStop(1,'#221650');c.fillStyle=g;const R=rng(15),p=new Path2D(),base=500;
+    p.moveTo(0,520);p.lineTo(0,base-60);
+    for(let x=0;x<1400;){const w=90+R()*120,h=60+R()*120,k=R();
+      if(k<.4){const n=3;for(let i=0;i<n;i++){p.lineTo(x+i*w/n,base-h);p.lineTo(x+i*w/n+w/n*.7,base-h-34);p.lineTo(x+i*w/n+w/n*.7,base-h);}}
+      else if(k<.7){p.lineTo(x,base-h);p.lineTo(x+w*.3,base-h);p.lineTo(x+w*.3,base-h-120);p.lineTo(x+w*.42,base-h-120);p.lineTo(x+w*.42,base-h);}
+      else{p.lineTo(x,base-h-40);p.quadraticCurveTo(x+w/2,base-h-90,x+w,base-h-40);}
+      p.lineTo(x+w,base-h);x+=w;}
+    p.lineTo(1400,base-50);p.lineTo(1400,520);p.closePath();c.fill(p);
+    c.save();c.globalCompositeOperation='source-atop';c.strokeStyle='rgba(160,255,190,.5)';c.lineWidth=3;c.translate(-2,-2);c.stroke(p);c.restore();
+    c.fillStyle='rgba(255,220,150,.85)';for(let i=0;i<220;i++){const x=R()*1400,y=base-10-R()*110;if(c.isPointInPath(p,x,y))c.fillRect(Math.round(x/14)*14,Math.round(y/14)*14,5,6);}
+    /* panel surya */
+    c.fillStyle='#4a6ab8';for(let i=0;i<8;i++){c.save();c.translate(80+i*170,base-6);c.transform(1,0,-.4,1,0,0);c.fillRect(0,-30,70,30);c.restore();}
+    return c.canvas;})();}
+
+/* ---- perkakas gambar ---- */
+function gambar(img,x,y,sk,rot=0,al=1,ax=.5,ay=1){if(al<=.01||sk<=.001)return;X.save();X.globalAlpha=al;X.translate(x,y);X.rotate(rot);X.scale(sk,sk);X.drawImage(img,-img.width*ax,-img.height*ay);X.restore();}
+function pil(x,y,teks,warna,k,ukuran=46){if(k<=.01)return;X.save();X.globalAlpha=clamp(k*1.4);X.font=`800 ${ukuran}px Murecho`;const w=X.measureText(teks).width+84,h=ukuran+30;
+  X.translate(x,y+(1-E.out(clamp(k)))*16);X.fillStyle='rgba(36,10,48,.84)';X.strokeStyle='rgba(255,214,180,.45)';X.lineWidth=2;X.beginPath();X.roundRect(-w/2,-h/2,w,h,h/2);X.fill();X.stroke();
+  X.fillStyle=warna;X.shadowColor=warna;X.shadowBlur=10;X.beginPath();X.arc(-w/2+30,0,9,0,TAU);X.fill();X.shadowBlur=0;X.fillStyle='#fff6ee';X.textBaseline='middle';X.textAlign='left';X.fillText(teks,-w/2+52,3);X.restore();}
+function pendar(x,y,r,warna,al){if(al<=.01)return;X.save();X.globalCompositeOperation='lighter';const q=X.createRadialGradient(x,y,0,x,y,r);q.addColorStop(0,`rgba(${warna},${al})`);q.addColorStop(1,`rgba(${warna},0)`);X.fillStyle=q;X.fillRect(x-r,y-r,2*r,2*r);X.restore();}
+function percik(x,y,u,k,warna='255,236,190',n=26,seed=3){if(k<=0||k>=1)return;const R=rng(seed);X.save();X.globalCompositeOperation='lighter';
+  for(let i=0;i<n;i++){const a=R()*TAU,v=180+R()*420,d=E.out(k)*v,s=(4+R()*8)*(1-k);X.globalAlpha=1-k;X.drawImage(DOT,x+Math.cos(a)*d-s*2,y+Math.sin(a)*d-s*2+k*k*120,s*4,s*4);}X.restore();}
+function bicara2(x,y,amp,t){if(amp<=.01)return;X.save();X.lineCap='round';for(let i=0;i<3;i++){const ph=((t*1.6+i/3)%1),r=14+ph*46;X.strokeStyle=`rgba(255,236,200,${amp*(1-ph)*.85})`;X.lineWidth=3.5;X.beginPath();X.arc(x,y,r,-.6,.6);X.stroke();}X.restore();}
+function latarSenja(t,s,awanDepan=true){const C={s,fx:540,fy:960,cx:540,cy:960,r:0};langit(t,C);awan(t,C,0);awan(t,C,1);debu(t,C,false);return C;}
+function vignet(){let q=X.createRadialGradient(540,1000,420,540,1000,1300);q.addColorStop(0,'rgba(0,0,0,0)');q.addColorStop(1,'rgba(14,4,30,.5)');X.fillStyle=q;X.fillRect(0,0,W,H);
+  q=X.createLinearGradient(0,0,0,460);q.addColorStop(0,'rgba(16,8,40,.6)');q.addColorStop(1,'rgba(16,8,40,0)');X.fillStyle=q;X.fillRect(0,0,W,460);}
+/* Pak Sarmuji berdiri (busana muslim) + gelombang bicara */
+function sarmujiBerdiri(t,x,kaki,h){clr(HC);const M=new DOMMatrix().translate(x,kaki).rotate(Math.sin(t*1.3)*.6).translate(-x,-kaki);
+  const r=sarmujiJalan(M,x,kaki,h,t*2,.0);X.save();X.globalCompositeOperation='screen';X.filter='blur(16px)';X.globalAlpha=.08;X.drawImage(HC.canvas,0,0);X.restore();X.drawImage(HC.canvas,0,0);
+  bicara2(r.kepala.x+70*h/900,r.kepala.y+40*h/900,bicaraAmp(t),t);return r;}
+
+/* ---- ADEGAN 3: jamu dipercaya sampai luar negeri → kumis kucing & keji beling ---- */
+function frame3(u,t){ID(X);X.globalCompositeOperation='source-over';X.globalAlpha=1;X.filter='none';
+  const C=latarSenja(t,1.05+.05*E.io(seg(u,0,10.6)));
+  const I=[250,1240],Ms=[820,640],ctl=[260,520];
+  const ruteK=E.io(seg(u,.3,2.0)),fade=1-seg(u,3.6,4.1);
+  if(fade>0){X.save();X.globalAlpha=fade;
+    /* pulau tropis (Indonesia) & piramida (Mesir) */
+    X.fillStyle='#3e8a5a';X.beginPath();X.ellipse(I[0],I[1]+40,170,40,0,0,TAU);X.fill();X.fillStyle='#6ac07a';X.beginPath();X.ellipse(I[0]-10,I[1]+30,130,26,0,0,TAU);X.fill();
+    X.strokeStyle='#5a3a2a';X.lineWidth=8;X.lineCap='round';X.beginPath();X.moveTo(I[0]+40,I[1]+30);X.quadraticCurveTo(I[0]+50,I[1]-40,I[0]+30,I[1]-110);X.stroke();
+    for(let i=0;i<6;i++){const a=-2.8+i*.55;X.fillStyle='#4fae5a';X.beginPath();X.ellipse(I[0]+30+Math.cos(a)*50,I[1]-110+Math.sin(a)*24,56,14,a,0,TAU);X.fill();}
+    [[Ms[0]-40,Ms[1]+90,120],[Ms[0]+70,Ms[1]+90,86]].forEach(([x,y,s])=>{X.fillStyle='#e8b070';X.beginPath();X.moveTo(x-s,y);X.lineTo(x,y-s*.9);X.lineTo(x+s,y);X.fill();X.fillStyle='#b8784a';X.beginPath();X.moveTo(x,y-s*.9);X.lineTo(x+s,y);X.lineTo(x+s*.15,y);X.fill();});
+    /* jalur bercahaya */
+    X.save();X.setLineDash([22,16]);X.lineDashOffset=-u*60;X.lineWidth=6;X.strokeStyle='rgba(255,230,170,.95)';X.shadowColor='rgba(255,200,120,.9)';X.shadowBlur=18;X.beginPath();
+    for(let i=0;i<=40*ruteK;i++){const q=i/40,v=1-q,x=v*v*I[0]+2*v*q*ctl[0]+q*q*Ms[0],y=v*v*(I[1]-120)+2*v*q*ctl[1]+q*q*(Ms[1]+20);i?X.lineTo(x,y):X.moveTo(x,y);}X.stroke();X.restore();
+    pil(I[0],I[1]+120,'Indonesia','#ff6a6a',E.out(seg(u,.4,.9)));pil(Ms[0]+10,Ms[1]+170,'Mesir','#ffd27a',E.out(seg(u,1.6,2.1)));X.restore();}
+  /* sachet: terbang Indonesia → Mesir, lalu ke tengah, lalu pecah */
+  const terbang=E.io(seg(u,.6,2.6)),keTengah=E.io(seg(u,3.0,3.9)),q=terbang,v=1-q;
+  let sx=v*v*I[0]+2*v*q*ctl[0]+q*q*Ms[0],sy=v*v*(I[1]-120)+2*v*q*ctl[1]+q*q*(Ms[1]+20);sx=lerp(sx,540,keTengah);sy=lerp(sy,820,keTengah);
+  const pecah=seg(u,3.95,4.0);
+  if(pecah<1){SS=lerp(.55,1.3,keTengah)*(1+.06*Math.sin(u*6));T=new DOMMatrix().translate(sx,sy).rotate(-10+Math.sin(u*3)*8).scale(SS);clr(HC);
+    organ(SACHET,JAMU,{k:40,lw:3,g:[-80,-110,80,120],tex:.15,isi:c=>{c.fillStyle='rgba(255,250,230,.92)';c.beginPath();c.roundRect(-62,-30,124,62,14);c.fill();
+      c.fillStyle='#2e6b4a';c.font="900 38px Murecho";c.textAlign='center';c.textBaseline='middle';c.fillText('JAMU',0,2);c.save();c.translate(-30,-70);c.fillStyle='#4fae5a';c.fill(DAUN);c.scale(-1,1);c.fill(DAUN);c.restore();}});
+    ID(HC);pendar(sx,sy,200*SS,'255,220,150',.35+.25*keTengah);X.drawImage(HC.canvas,0,0);bintang(X,sx+60*SS,sy-90*SS,9,Math.sin(Math.PI*((u*.9)%1))**3);}
+  /* tanaman tumbuh dari tanah */
+  const tumbuh=E.out(seg(u,4.0,5.6)),subur=sstep(7.9,9.0,u);
+  if(tumbuh>0){gambar(ASET.tanah,540,1440+(1-tumbuh)*200,1,0,1);
+    const goy=(a,o)=>Math.sin(u*1.4+o)*a*(1+subur);
+    pendar(330,950,380,'190,255,170',.22*tumbuh);pendar(760,1000,340,'190,255,170',.18*tumbuh);
+    gambar(ASET.kk,330,1330,.95*E.back(clamp(tumbuh)),goy(.03,0),1);
+    gambar(ASET.kb,770,1335,.9*E.back(clamp(seg(u,4.3,5.9))),goy(.025,1.7),1);
+    [[230,520,0],[380,460,.3],[300,600,.6],[720,640,.15],[840,560,.45]].forEach(([x,y,o])=>bintang(X,x,y,8,Math.sin(Math.PI*((u*.8+o)%1))**3*tumbuh));
+    /* tunas kecil saat "tumbuh subur" */
+    if(subur>0)for(let i=0;i<7;i++){const x=120+i*140,k=E.back(clamp(seg(u,8.0+i*.12,8.6+i*.12)));if(k<=0)continue;X.save();X.translate(x,1370);X.scale(k,k);X.fillStyle='#6ac07a';X.strokeStyle='#1f5e3e';X.lineWidth=3;
+      X.beginPath();X.ellipse(-16,-30,20,9,-.6,0,TAU);X.fill();X.stroke();X.beginPath();X.ellipse(16,-34,20,9,.6,0,TAU);X.fill();X.stroke();X.beginPath();X.moveTo(0,0);X.lineTo(0,-34);X.stroke();X.restore();}
+    pil(300,560,'kumis kucing','#d6beff',E.out(seg(u,5.7,6.2)));pil(770,680,'keji beling','#7ff0a0',E.out(seg(u,6.7,7.2)));}
+  percik(540,820,u,seg(u,3.95,5.0),'220,255,190',40,8);
+  awan(t,C,2);debu(t,C,true);vignet();}
+
+/* ---- ADEGAN 4: keanekaragaman hayati Nusantara → minyak atsiri, nilam, rempah ---- */
+function frame4(u,t){ID(X);X.globalCompositeOperation='source-over';X.globalAlpha=1;X.filter='none';
+  let g=X.createLinearGradient(0,0,0,H);g.addColorStop(0,'#120d36');g.addColorStop(.3,'#2a2270');g.addColorStop(.55,'#3c3a98');g.addColorStop(.78,'#8a5aa8');g.addColorStop(1,'#f0a0a0');X.fillStyle=g;X.fillRect(0,0,W,H);
+  /* kilau laut */
+  X.save();X.globalCompositeOperation='screen';const R=rng(4);for(let i=0;i<90;i++){const x=(R()*1200+u*14*(R()+.2))%1200-60,y=560+R()*700,w=20+R()*60;X.strokeStyle=`rgba(255,220,240,${.06+.08*Math.sin(u*2+i)**2})`;X.lineWidth=2;X.beginPath();X.moveTo(x,y);X.lineTo(x+w,y);X.stroke();}X.restore();
+  const s=lerp(2.3,.9,E.io(seg(u,0,3.4)))*(1+.03*seg(u,3.4,14.6)),fx=lerp(456,540,E.io(seg(u,0,3.4))),fy=lerp(880,900,E.io(seg(u,0,3.4)));
+  const M=new DOMMatrix().translate(540,900).scale(s).translate(-fx,-fy);
+  X.save();X.setTransform(M);X.globalCompositeOperation='screen';X.filter='blur(30px)';X.globalAlpha=.35;X.drawImage(ASET.peta,0,690);X.restore();
+  X.save();X.setTransform(M);X.drawImage(ASET.peta,0,690);X.restore();
+  /* titik kehidupan berdenyut di seluruh pulau */
+  const hidup=sstep(3.6,5.2,u);ASET.titik.forEach(([x,y,o],i)=>{const p=M.transformPoint(new DOMPoint(x,y+690)),ph=(u*.7+o)%1;pendar(p.x,p.y,40,i%3?'190,255,170':'255,230,160',.5*hidup*Math.sin(Math.PI*ph));if(i%4===0)bintang(X,p.x,p.y,6,hidup*Math.sin(Math.PI*ph)**3);});
+  /* awan tipis melintas (dilihat dari atas awan) */
+  X.save();X.globalAlpha=.4*(1-seg(u,2.5,4));X.filter='blur(6px)';AWAN.forEach(([img,x0,y,sp,l],i)=>{if(l!==1)return;X.drawImage(img,((x0-u*60)%1500+1500)%1500-400,500+i*90,img.width*1.3,img.height*1.3);});X.restore();
+  awan(t,{s:1},1);
+  /* ikon hasil alam */
+  const ik=[[ASET.atsiri,220,'minyak atsiri','#ffd27a',10.0],[ASET.nilam,540,'nilam','#7ff0a0',11.4],[ASET.rempah,860,'rempah','#ff9a6a',12.3]];
+  ik.forEach(([img,x,teks,w,a],i)=>{const k=E.back(clamp(seg(u,a,a+.5)));if(k<=0)return;const y=1270+Math.sin(u*2+i)*6;
+    /* aliran partikel dari peta ke ikon */
+    for(let j=0;j<6;j++){const f=((u*.8+j/6)%1),px=lerp(lerp(300,800,j/5),x,f),py=lerp(1000,y-140,f);X.save();X.globalCompositeOperation='lighter';X.globalAlpha=(1-f)*.7*clamp(k);X.drawImage(DOT,px-8,py-8,16,16);X.restore();}
+    pendar(x,y-110,150,'255,230,170',.3*clamp(k));gambar(img,x,y,.72*k,Math.sin(u*1.5+i)*.04,1,.5,.95);pil(x,y+60,teks,w,clamp(seg(u,a+.2,a+.6)),44);});
+  vignet();}
+
+/* ---- ADEGAN 5: teknologi + riset → produk bernilai tambah, bukan ekspor mentah ---- */
+function frame5(u,t){ID(X);X.globalCompositeOperation='source-over';X.globalAlpha=1;X.filter='none';
+  const C=latarSenja(t,1.05);
+  const SM=sarmujiBerdiri(t,250,1420,800);
+  pil(250,1360,'Menperin M. Sarmuji','#ffd27a',E.out(seg(u,.2,.7))*(1-seg(u,2.6,3.0)),44);
+  /* labu + roda gigi (teknologi & riset) */
+  const lab=E.back(clamp(seg(u,1.6,2.2)));
+  if(lab>0){gambar(ASET.gigi,860,600,.9*lab,u*.8,1,.5,.5);gambar(ASET.gigi,960,760,.5*lab,-u*1.4,1,.5,.5);pendar(720,780,320,'170,255,190',.3*lab);
+    gambar(ASET.labu,720,960,.95*lab,Math.sin(u*1.2)*.02,1,.5,1);
+    /* gelembung di dalam labu */
+    const R=rng(66);X.save();X.globalCompositeOperation='lighter';for(let i=0;i<14;i++){const f=((u*.6+R())%1),x=720+(R()-.5)*180*(1-f*.5),y=lerp(950,820,f);X.globalAlpha=lab*(1-f);X.strokeStyle='rgba(230,255,230,.9)';X.lineWidth=2;X.beginPath();X.arc(x,y,4+R()*7,0,TAU);X.stroke();}X.restore();}
+  /* bahan alam → labu → produk jadi */
+  const olah=seg(u,4.6,5.4),pro=E.back(clamp(seg(u,5.6,6.2))),mentah=sstep(7.6,8.1,u);
+  if(olah>0){const daunK=E.back(clamp(olah*1.3))*(1-mentah);
+    if(daunK>0){X.save();X.translate(560,1180);X.rotate(Math.sin(u*2)*.1);X.scale(daunK,daunK);X.drawImage(ASET.nilam,-130,-260,260,260);X.restore();}
+    for(let j=0;j<10;j++){const f=((u*.9+j/10)%1);if(u<4.8)break;const a=[560,1000],b=[640,760],c=[720,820];const v=1-f,x=v*v*a[0]+2*v*f*b[0]+f*f*c[0],y=v*v*a[1]+2*v*f*b[1]+f*f*c[1];X.save();X.globalCompositeOperation='lighter';X.globalAlpha=.8*(1-mentah);X.drawImage(DOT,x-9,y-9,18,18);X.restore();}
+    for(let j=0;j<10;j++){const f=((u*.9+j/10)%1);if(u<5.4)break;const x=lerp(760,880,f),y=lerp(960,1000+80*Math.sin(f*3),f);X.save();X.globalCompositeOperation='lighter';X.globalAlpha=.8;X.drawImage(DOT,x-9,y-9,18,18);X.restore();}}
+  if(pro>0){pendar(890,1060,220,'255,226,150',.4*pro);gambar(ASET.produk,890,1260,.78*pro,0,1);pil(910,1340,'produk jadi','#7ff0a0',clamp(seg(u,6.0,6.4)),44);
+    /* panah nilai tambah naik */
+    const n=E.out(seg(u,6.2,7.0));if(n>0){X.save();X.translate(1010,1120);X.globalAlpha=n;X.strokeStyle='#ffd27a';X.fillStyle='#ffd27a';X.lineWidth=12;X.lineCap='round';X.beginPath();X.moveTo(0,0);X.lineTo(0,-200*n);X.stroke();
+      X.beginPath();X.moveTo(-26,-200*n+10);X.lineTo(0,-200*n-26);X.lineTo(26,-200*n+10);X.fill();X.restore();}}
+  /* peti bahan mentah dicoret */
+  if(mentah>0){const k=E.back(clamp(mentah));gambar(ASET.peti,530,1260,.62*k,0,1);pil(520,1340,'bahan mentah','#ff8a8a',clamp(seg(u,7.9,8.3)),44);
+    const x=E.out(seg(u,8.3,8.7));if(x>0){X.save();X.translate(530,1150);X.strokeStyle='#ff4a5a';X.lineWidth=18;X.lineCap='round';X.shadowColor='rgba(255,60,80,.7)';X.shadowBlur=16;
+      X.beginPath();X.moveTo(-80,-80);X.lineTo(-80+160*x,-80+160*x);X.stroke();if(x>.5){const y=(x-.5)*2;X.beginPath();X.moveTo(80,-80);X.lineTo(80-160*y,-80+160*y);X.stroke();}X.restore();}
+    const c=E.back(clamp(seg(u,8.8,9.2)));if(c>0){X.save();X.translate(960,960);X.scale(c,c);X.fillStyle='#2e9a68';X.strokeStyle='#fff';X.lineWidth=5;X.beginPath();X.arc(0,0,46,0,TAU);X.fill();X.stroke();
+      X.strokeStyle='#fff';X.lineWidth=12;X.lineCap='round';X.lineJoin='round';X.beginPath();X.moveTo(-20,2);X.lineTo(-4,18);X.lineTo(22,-16);X.stroke();X.restore();}}
+  percik(890,1100,u,seg(u,5.6,6.6),'255,236,170',30,14);
+  awan(t,C,2);debu(t,C,true);vignet();}
+
+/* ---- ADEGAN 6: penutup — dari jamu masuk angin lahir industri masa depan ---- */
+function frame6(u,t){ID(X);X.globalCompositeOperation='source-over';X.globalAlpha=1;X.filter='none';
+  const C=latarSenja(t,1.0+.08*E.io(seg(u,0,8.6)));
+  const muncul=E.out(seg(u,3.4,5.0));
+  if(muncul>0){X.save();X.globalAlpha=muncul;X.drawImage(ASET.kawasan,-160,1170-520+(1-muncul)*80);X.restore();
+    pendar(540,1120,700,'160,255,190',.3*muncul);
+    /* kincir angin berputar */
+    [[140,1000],[960,980]].forEach(([x,y],i)=>{X.save();X.globalAlpha=muncul;X.strokeStyle='#3e2a72';X.lineWidth=8;X.beginPath();X.moveTo(x,y);X.lineTo(x,y+180);X.stroke();X.translate(x,y);X.rotate(u*2+i);
+      X.fillStyle='#e8e0f8';for(let b=0;b<3;b++){X.rotate(TAU/3);X.beginPath();X.ellipse(0,-48,9,48,0,0,TAU);X.fill();}X.fillStyle='#3e2a72';X.beginPath();X.arc(0,0,8,0,TAU);X.fill();X.restore();});}
+  const SM=sarmujiBerdiri(t,540,1420,860);
+  /* sachet jamu di samping, bercahaya lalu memancar ke cakrawala */
+  const sk=E.back(clamp(seg(u,.3,.9))),lepas=seg(u,3.3,3.6);
+  if(sk>0&&lepas<1){SS=.75*sk*(1+.05*Math.sin(u*5));T=new DOMMatrix().translate(830,860+Math.sin(u*2.4)*10).rotate(-8+Math.sin(u*2)*6).scale(SS);clr(HC);
+    organ(SACHET,JAMU,{k:40,lw:3,g:[-80,-110,80,120],tex:.15,isi:c=>{c.fillStyle='rgba(255,250,230,.92)';c.beginPath();c.roundRect(-62,-30,124,62,14);c.fill();
+      c.fillStyle='#2e6b4a';c.font="900 38px Murecho";c.textAlign='center';c.textBaseline='middle';c.fillText('JAMU',0,2);c.save();c.translate(-30,-70);c.fillStyle='#4fae5a';c.fill(DAUN);c.scale(-1,1);c.fill(DAUN);c.restore();}});
+    ID(HC);pendar(830,860,240,'255,226,150',.3+.5*seg(u,2.4,3.3));X.save();X.globalAlpha=1-lepas;X.drawImage(HC.canvas,0,0);X.restore();}
+  if(u>3.3){for(let j=0;j<40;j++){const f=((u*.7+j/40)%1),tx=80+(j*97)%920,v=1-f,x=v*v*830+2*v*f*(830+(tx-830)*.2)+f*f*tx,y=v*v*860+2*v*f*560+f*f*1080;
+      X.save();X.globalCompositeOperation='lighter';X.globalAlpha=.75*(1-f*.6)*sstep(3.3,3.8,u);X.drawImage(DOT,x-10,y-10,20,20);X.restore();}}
+  percik(830,860,u,seg(u,3.3,4.3),'255,236,170',44,21);
+  awan(t,C,2);debu(t,C,true);vignet();
+  /* judul penutup */
+  const a=$('#akhir');a.style.opacity=seg(u,3.6,4.0);const k1=E.back(seg(u,3.6,4.1)),k2=E.out(seg(u,4.0,4.6)),k3=E.out(seg(u,4.3,4.9));
+  $('#aK').style.transform=`translateY(${(1-k1)*24}px) scale(${.9+.1*k1})`;
+  [['#aW1',k2],['#aW2',k3]].forEach(([id,k])=>{const e=$(id);e.style.opacity=k;e.style.transform=`translateY(${(1-k)*40}px) scale(${1+(1-k)*.2})`;e.style.filter=`blur(${(1-k)*10}px)`;});}
+
+/* ---- chip judul kecil per adegan: [id, mulai, selesai] dalam detik global ---- */
+const CHIPS=[['c2a',S2+.5,S2+3.9],['c2',S2+4.6,S2+10.9],['c3a',S3+.7,S3+3.8],['c4a',S4+3.7,S4+9.2],['c5a',S5+1.7,S5+4.4],['c5b',S5+4.7,S5+10.0]];
+function aturChip(t){CHIPS.forEach(([id,a,b])=>{const el=$('#'+id),k=E.back(seg(t,a,a+.5)),o=seg(t,a,a+.25)*(1-seg(t,b,b+.3));el.style.opacity=o;el.style.transform=`translateX(-50%) translateY(${(1-k)*24}px) scale(${.9+.1*k})`;});}
+
+/* pengatur adegan: adegan 1 → (balon menembus layar) → 2 → 3 → 4 → 5 → 6, perpindahan dengan kilat cahaya senja */
 function frame(t){
-  if(t<S2)frame1(t);else frame2(t-S2,t);
+  if(t>=S2){$('#ttl').style.opacity=0;$('#lb0').style.opacity=0;}
+  if(t<S6)$('#akhir').style.opacity=0;
+  if(t<S2)frame1(t);else if(t<S3)frame2(t-S2,t);else if(t<S4)frame3(t-S3,t);else if(t<S5)frame4(t-S4,t);else if(t<S6)frame5(t-S5,t);else frame6(t-S6,t);
+  aturChip(t);
   const k=seg(t,S2-.55,S2)*(1-seg(t,S2,S2+.5));
   if(k>0){X.save();ID(X);const r=lerp(150,1500,E.in(seg(t,S2-.55,S2)));X.globalAlpha=t<S2?1:1-seg(t,S2,S2+.5);
     const g=X.createRadialGradient(820,575,0,820,575,Math.max(r,1));g.addColorStop(0,'#fff6ee');g.addColorStop(.8,'#ffe0c8');g.addColorStop(1,'rgba(255,214,190,.0)');
-    X.fillStyle=g;if(t<S2){X.beginPath();X.arc(820,575,r,0,TAU);X.fill();}else X.fillRect(0,0,W,H);X.restore();}}
+    X.fillStyle=g;if(t<S2){X.beginPath();X.arc(820,575,r,0,TAU);X.fill();}else X.fillRect(0,0,W,H);X.restore();}
+  for(const s of [S3,S4,S5,S6]){const d=Math.abs(t-s);if(d<.35){X.save();ID(X);X.globalAlpha=(1-d/.35)*.9;X.fillStyle='#fff0e4';X.fillRect(0,0,W,H);X.restore();}}}
 
 /* ================= 9. SCENE ================= */
 const SCENE={
-  dur:WAKTU.dur+W2.dur,
-  sub:{gaya:'pil',maks:3,y:.775,font:"800 54px Murecho",warna:'#FFF6EE',aksen:'#FFD27A',kunci:['dikejar-kejar','Mesir','Tanah','Suci','jamu','suami-istri','mengejar','obat','masuk','angin']},
-  audio:{vo:[{src:'assets/audio/vo-01.mp3',at:.3,teks:'Pernah dengar? Seorang menteri dikejar-kejar orang Mesir di Tanah Suci. Gara-garanya… sebungkus jamu!'}],
-    sfx:[{src:'assets/audio/sfx-pop.mp3',at:4.65,vol:.35},{src:'assets/audio/sfx-whoosh.mp3',at:8.05,vol:.4}],music:null},
-  muat:()=>Promise.all([muatGambar('foto','assets/gambar/sarmuji.png'),document.fonts.ready]).then(buatFigurMuslim),
+  dur:DUR,
+  sub:{gaya:'pil',maks:3,y:.775,font:"800 54px Murecho",warna:'#FFF6EE',aksen:'#FFD27A',
+    kunci:['dikejar-kejar','Mesir','Tanah','Suci','jamu','jamu!','Sarmuji','suami-istri','mengejar','obat','masuk','angin','kumis','kucing','keji','beling','keanekaragaman','hayati','atsiri','nilam','rempah-rempah','teknologi','riset','bernilai','tambah','industri','masa','depan']},
+  audio:{vo:[
+      {src:'assets/audio/vo-01.mp3',at:.3,teks:'Pernah dengar? Seorang menteri dikejar-kejar orang Mesir di Tanah Suci. Gara-garanya… sebungkus jamu!'},
+      {src:'assets/audio/vo-02.mp3',at:S2+.3,teks:'Kisah ini diceritakan Menteri Perindustrian, Pak Sarmuji. Saat berhaji, sepasang suami-istri asal Mesir berlari mengejar beliau. Ternyata… cuma mau minta obat masuk angin dari Indonesia!'},
+      {src:'assets/audio/vo-03.mp3',at:S3+.4,teks:'Ternyata, jamu kita dipercaya sampai ke luar negeri. Ramuannya dari tanaman seperti kumis kucing dan keji beling, yang tumbuh subur di tanah air.'},
+      {src:'assets/audio/vo-04.mp3',at:S4+.4,teks:'Dan itu baru sebagian kecil. Indonesia termasuk negara dengan keanekaragaman hayati terkaya di dunia. Dari alam kita lahir minyak atsiri, nilam, sampai rempah-rempah.'},
+      {src:'assets/audio/vo-05.mp3',at:S5+.4,teks:'Menurut Pak Sarmuji, kuncinya ada di teknologi dan riset. Bahan alam diolah jadi produk bernilai tambah, bukan cuma diekspor mentah.'},
+      {src:'assets/audio/vo-06.mp3',at:S6+.4,teks:'Jadi, dari sebungkus jamu masuk angin… bisa lahir industri masa depan Indonesia.'}],
+    sfx:[{src:'assets/audio/sfx-pop.mp3',at:4.65,vol:.35},{src:'assets/audio/sfx-whoosh.mp3',at:8.05,vol:.4},
+      {src:'assets/audio/sfx-swish.mp3',at:S2+3.95,vol:.35},{src:'assets/audio/sfx-pop.mp3',at:S3+3.95,vol:.4},
+      {src:'assets/audio/sfx-swell.mp3',at:S6-.6,vol:.3},{src:'assets/audio/sfx-sting.mp3',at:S6+3.5,vol:.35}],music:null},
+  muat:()=>Promise.all([muatGambar('foto','assets/gambar/sarmuji.png'),document.fonts.ready]).then(()=>{buatFigurMuslim();buatAset();}),
   build(tl){grainOn(.08,'overlay');const e=$('#tW');e.innerHTML=[...e.textContent].map(ch=>ch===' '?'<span>&nbsp;</span>':`<span>${ch}</span>`).join('');},
   frame
 };

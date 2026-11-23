@@ -1,6 +1,7 @@
 # Naskah · Kisah Menperin dikejar orang Mesir
 
-Format 9:16 · ±60 detik · gaya Tubuh Manusia Anime · narator perempuan hangat (ElevenLabs)
+Format 9:16 · ±67 detik · gaya Tubuh Manusia Anime
+Suara: Serena - Calm, Warm, Gentle (fpsPI3vlnQ0anCTPiHk5) · model eleven_v4 · bahasa Indonesia · 1 variasi per klip
 
 | # | Adegan (yang terlihat) | Kalimat VO | Perkiraan detik |
 |---|---|---|---|
