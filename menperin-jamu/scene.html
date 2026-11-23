@@ -297,7 +297,7 @@ function bicara(t,C,amp){if(amp<=.01)return;const m=kePeta(MULUT),x=(m[0]-C.fx)*
 
 /* ================= 6. WAKTU & KAMERA =================
    Semua detik penting di WAKTU (digeser setelah VO jadi). KAM: [detik, skala, fokusX, fokusY, putar°] dalam koordinat dunia. */
-const WAKTU={mundur:[.4,3.4],judul:3.3,chip:4.0,kota:[2.2,4.0],label:4.6,balon:5.6,tanya:6.4,dur:8.5};
+const WAKTU={mundur:[.4,3.4],judul:3.3,chip:4.0,kota:[2.2,4.0],label:4.6,balon:4.6,tanya:5.4,dur:8.5};
 const KAM=[[0,2.9,518,640,4],[.4,2.8,518,645,3.6],[3.4,1,540,940,0],[8.5,1.05,540,930,0]];
 function kamera(t){let i=0;while(i<KAM.length-2&&t>KAM[i+1][0])i++;const a=KAM[i],b=KAM[i+1],k=E.io(clamp((t-a[0])/(b[0]-a[0])));
   return{s:lerp(a[1],b[1],k),fx:lerp(a[2],b[2],k)+nz(t*.35,1)*4,fy:lerp(a[3],b[3],k)+nz(t*.3,2)*4,r:lerp(a[4],b[4],k)+.4*nz(t*.4,3),cx:540,cy:960};}
@@ -514,17 +514,9 @@ function frame(t){
 /* ================= 9. SCENE ================= */
 const SCENE={
   dur:WAKTU.dur+W2.dur,
-  /* PERKIRAAN waktu kata (gambar uji, belum ada suara). Setelah VO jadi: hapus, lalu mf.py kata. */
-  kata:[{w:'Pernah',t0:.5,t1:.85},{w:'dengar?',t0:.85,t1:1.4},
-        {w:'Seorang',t0:1.7,t1:2.1},{w:'menteri',t0:2.1,t1:2.5},{w:'dikejar-kejar',t0:2.5,t1:3.2},
-        {w:'orang',t0:3.3,t1:3.6},{w:'Mesir',t0:3.6,t1:4.1},{w:'di',t0:4.2,t1:4.3},{w:'Tanah',t0:4.3,t1:4.6},{w:'Suci.',t0:4.6,t1:5.1},
-        {w:'Gara-garanya…',t0:5.5,t1:6.3},{w:'sebungkus',t0:6.5,t1:7.0},{w:'jamu!',t0:7.0,t1:7.7},
-        {w:'Sepasang',t0:9.1,t1:9.6},{w:'suami-istri',t0:9.6,t1:10.3},{w:'asal',t0:10.4,t1:10.7},{w:'Mesir',t0:10.7,t1:11.2},
-        {w:'berlari',t0:11.6,t1:12.1},{w:'mengejar',t0:12.1,t1:12.7},{w:'beliau.',t0:12.7,t1:13.3},
-        {w:'Ternyata',t0:14.4,t1:14.9},{w:'cuma',t0:14.9,t1:15.2},{w:'mau',t0:15.2,t1:15.4},{w:'minta…',t0:15.4,t1:15.9},
-        {w:'obat',t0:16.1,t1:16.4},{w:'masuk',t0:16.4,t1:16.8},{w:'angin!',t0:16.8,t1:17.5}],
   sub:{gaya:'pil',maks:3,y:.775,font:"800 54px Murecho",warna:'#FFF6EE',aksen:'#FFD27A',kunci:['dikejar-kejar','Mesir','Tanah','Suci','jamu','suami-istri','mengejar','obat','masuk','angin']},
-  audio:{vo:[],sfx:[],music:null},
+  audio:{vo:[{src:'assets/audio/vo-01.mp3',at:.3,teks:'Pernah dengar? Seorang menteri dikejar-kejar orang Mesir di Tanah Suci. Gara-garanya… sebungkus jamu!'}],
+    sfx:[{src:'assets/audio/sfx-pop.mp3',at:4.65,vol:.35},{src:'assets/audio/sfx-whoosh.mp3',at:8.05,vol:.4}],music:null},
   muat:()=>Promise.all([muatGambar('foto','assets/gambar/sarmuji.png'),document.fonts.ready]).then(buatFigurMuslim),
   build(tl){grainOn(.08,'overlay');const e=$('#tW');e.innerHTML=[...e.textContent].map(ch=>ch===' '?'<span>&nbsp;</span>':`<span>${ch}</span>`).join('');},
   frame
